@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { dbAdmin } from '@/firebase/admin';
 import { fetchBookByIsbn } from '@/lib/rakutenBookApi';
 import { Avatar } from '@material-ui/core';
+import AvatarGroup from '@material-ui/lab/AvatarGroup';
 
 const BookDetail = ({ book, readers }) => {
   return (
@@ -23,14 +24,17 @@ const BookDetail = ({ book, readers }) => {
       >
         Amazon
       </a>
-      {readers &&
-        readers.map(reader => (
-          <Avatar
-            alt="profile-img"
-            src={reader.profileImageUrl}
-            key={reader.uid}
-          />
-        ))}
+      {readers && (
+        <AvatarGroup max={5}>
+          {readers.map(reader => (
+            <Avatar
+              alt="profile-img"
+              src={reader.profileImageUrl}
+              key={reader.uid}
+            />
+          ))}
+        </AvatarGroup>
+      )}
     </>
   );
 };

@@ -1,9 +1,25 @@
+import { useEffect } from 'react';
 import { dbAdmin } from '@/firebase/admin';
-import { useRecoilState } from 'recoil';
+import { useRecoilValue } from 'recoil';
 import { loginUserState } from '@/recoil/atoms';
 import FriendList from '@/components/FriendList';
 
 const Friends = ({ friendListOwner, friendListOwnerFriends }) => {
+  const loginUser = useRecoilValue(loginUserState);
+
+  useEffect(() => {
+    console.log('hoge');
+    if (loginUser && loginUser.uid === friendListOwner.uid) {
+      fetch(`/api/firestore/users/${loginUser.uid}/readNotification`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ type: 'newEntry' }),
+      });
+    }
+  }, [friendListOwner, loginUser]);
+
   if (!friendListOwner) {
     return <p>ユーザーが存在しません</p>;
   }

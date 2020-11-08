@@ -11,3 +11,4 @@ if (firebaseAdmin.apps.length === 0) {
 
 export default firebaseAdmin;
 export const dbAdmin = firebaseAdmin.firestore();
+export const authAdmin = firebaseAdmin.auth();

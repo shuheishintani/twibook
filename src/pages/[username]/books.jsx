@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect, useCallback } from 'react';
 import firebase, { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
@@ -5,9 +6,17 @@ import { useRecoilValue } from 'recoil';
 import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
 
 import BookList from '@/components/BookList';
-import { Button } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Switch from '@material-ui/core/Switch';
+import {
+  FormControlLabel,
+  Switch,
+  Typography,
+  Avatar,
+  Box,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails
+} from '@material-ui/core';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const Books = ({ bookListOwner, bookListOwnerBooks }) => {
   const [isMyList, setIsMyList] = useState(false);
@@ -92,34 +101,68 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
 
   return (
     <>
-      <p>{bookListOwner.displayName}さんの本棚</p>
-      {isMyList && (
-        <FormControlLabel
-          control={
-            <Switch
-              checked={onEditMode}
-              onChange={handleEditMode}
-              name="onEditMode"
-              color="primary"
-            />
-          }
-          label="編集モード"
-        />
-      )}
-      {!isMyList && subscribe && (
-        <Button variant="contained" onClick={handleUnSubscribe}>
-          ウォッチリストから削除
-        </Button>
+      <Box display="flex" alignItems="flex-end">
+        <Box flexGrow={1}>
+          <Box display="flex" alignItems="flex-end">
+            <Avatar alt="profile-img" src={bookListOwner.profileImageUrl} />
+            <Box m={1} />
+            <Typography variant="subtitle1">
+              {bookListOwner.displayName}さんの本棚
+        </Typography>
+          </Box>
+        </Box>
+
+        {isMyList && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={onEditMode}
+                onChange={handleEditMode}
+                name="onEditMode"
+                color="primary"
+              />
+            }
+            label={<Typography variant="subtitle2">編集モード</Typography>}
+          />
+        )}
+
+        {loginUser && !isMyList && (
+          <FormControlLabel
+            control={
+              <Switch
+                checked={subscribe}
+                onChange={subscribe ? handleUnSubscribe : handleSubscribe}
+                name="onEditMode"
+                color="primary"
+              />
+            }
+            label={<Typography variant="subtitle2">更新通知を受け取る</Typography>}
+          />
+        )}
+
+      </Box>
+
+      <Box m={3} />
+
+      {!isMyList && (
+        <Accordion>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography variant="subtitle2">共通の本（{sharedBooks.length}）</Typography>
+          </AccordionSummary>
+
+          {sharedBooks.map((book, index) => (
+            <AccordionDetails key={index}>
+              <Typography variant="subtitle2">{book.author}『{book.title}』（{book.publisherName}）</Typography>
+            </AccordionDetails>
+          ))}
+        </Accordion>
       )}
 
-      {!isMyList && !subscribe && (
-        <Button variant="contained" onClick={handleSubscribe}>
-          ウォッチリストに追加
-        </Button>
-      )}
-
-      {!isMyList &&
-        sharedBooks.map(book => <p key={book.isbn}>{book.title}</p>)}
+      <Box m={3} />
 
       {bookListOwnerBooks.length !== 0 && (
         <BookList

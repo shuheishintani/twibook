@@ -185,9 +185,7 @@ export default function Layout({ children }) {
       >
         <div className={classes.drawerHeader}>
           {loginUser && (
-            <IconButton edge="end" color="inherit">
-              <Avatar alt="profile-img" src={loginUser.profileImageUrl} />
-            </IconButton>
+            <Avatar alt="profile-img" src={loginUser.profileImageUrl} />
           )}
 
           <IconButton onClick={handleDrawerClose}>

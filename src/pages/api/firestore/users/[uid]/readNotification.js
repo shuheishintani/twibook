@@ -1,32 +1,53 @@
 import { dbAdmin } from '@/firebase/admin';
 
 export default async (req, res) => {
-  const { uid } = req.query;
-  const batch = dbAdmin.batch();
+  if (req.method === 'POST') {
+    const { uid } = req.query;
+    const { type } = req.body;
+    const batch = dbAdmin.batch();
 
-  const snapshot = await dbAdmin
-    .doc(`users/${uid}`)
-    .collection('notifications')
-    .where('unread', '==', true)
-    .get();
+    const unreadNotificationsSnapshot = await dbAdmin
+      .doc(`users/${uid}`)
+      .collection('notifications')
+      .where('unread', '==', true)
+      .get();
 
-  const unreadNotificationIds = snapshot.docs.map(doc => doc.data().id);
-
-  unreadNotificationIds.forEach(unreadNotificationId => {
-    const unreadNotificationRef = dbAdmin.doc(
-      `/users/${uid}/notifications/${unreadNotificationId}`
+    const unreadNotificationIds = unreadNotificationsSnapshot.docs.map(
+      doc => doc.data().id
     );
 
-    batch.set(
-      unreadNotificationRef,
-      {
-        unread: false,
-      },
-      { merge: true }
+    const selectedNotificationsSnapshot = await dbAdmin
+      .doc(`users/${uid}`)
+      .collection('notifications')
+      .where('type', '==', type)
+      .get();
+
+    const selectedNotificationIds = selectedNotificationsSnapshot.docs.map(
+      doc => doc.data().id
     );
-  });
 
-  batch.commit();
+    const unreadSelectedNotificatioinIds = unreadNotificationIds.filter(id =>
+      selectedNotificationIds.includes(id)
+    );
 
-  res.status(200).end();
+    console.log('hoge');
+
+    unreadSelectedNotificatioinIds.forEach(id => {
+      const unreadSelectedNotificationRef = dbAdmin.doc(
+        `/users/${uid}/notifications/${id}`
+      );
+
+      batch.set(
+        unreadSelectedNotificationRef,
+        {
+          unread: false,
+        },
+        { merge: true }
+      );
+    });
+
+    batch.commit();
+
+    res.status(200).end();
+  }
 };
