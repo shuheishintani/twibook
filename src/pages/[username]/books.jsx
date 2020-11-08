@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { useState, useEffect, useCallback } from 'react';
 import firebase, { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
@@ -14,7 +13,7 @@ import {
   Box,
   Accordion,
   AccordionSummary,
-  AccordionDetails
+  AccordionDetails,
 } from '@material-ui/core';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
@@ -42,7 +41,7 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
   }, [bookListOwnerBooks, loginUserBooks]);
 
   useEffect(() => {
-    if (loginUser) {
+    if (loginUser && bookListOwner) {
       setIsMyList(loginUser.uid === bookListOwner.uid);
     }
   }, [bookListOwner, loginUser]);
@@ -99,6 +98,10 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
     });
   }, [bookListOwner, loginUser]);
 
+  if (!bookListOwner) {
+    return <p>ユーザーが存在しません</p>;
+  }
+
   return (
     <>
       <Box display="flex" alignItems="flex-end">
@@ -108,7 +111,7 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
             <Box m={1} />
             <Typography variant="subtitle1">
               {bookListOwner.displayName}さんの本棚
-        </Typography>
+            </Typography>
           </Box>
         </Box>
 
@@ -136,10 +139,11 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
                 color="primary"
               />
             }
-            label={<Typography variant="subtitle2">更新通知を受け取る</Typography>}
+            label={
+              <Typography variant="subtitle2">更新通知を受け取る</Typography>
+            }
           />
         )}
-
       </Box>
 
       <Box m={3} />
@@ -151,12 +155,16 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography variant="subtitle2">共通の本（{sharedBooks.length}）</Typography>
+            <Typography variant="subtitle2">
+              共通の本（{sharedBooks.length}）
+            </Typography>
           </AccordionSummary>
 
           {sharedBooks.map((book, index) => (
             <AccordionDetails key={index}>
-              <Typography variant="subtitle2">{book.author}『{book.title}』（{book.publisherName}）</Typography>
+              <Typography variant="subtitle2">
+                {book.author}『{book.title}』（{book.publisherName}）
+              </Typography>
             </AccordionDetails>
           ))}
         </Accordion>
@@ -189,6 +197,14 @@ export const getServerSideProps = async ctx => {
       });
       return data;
     });
+
+  if (!bookListOwner) {
+    return {
+      props: {
+        bookListOwner: null,
+      },
+    };
+  }
 
   const bookListOwnerBooks = await dbAdmin
     .collection('users')

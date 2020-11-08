@@ -40,13 +40,27 @@ export const fetchBookByIsbn = async isbnInput => {
   const data = await response.json();
   const bookData = data.Items.map(val => val.Item)[0];
 
+  console.log(bookData);
+
   const {
     isbn,
     title,
     author,
     publisherName,
     largeImageUrl: coverImageUrl,
+    itemCaption: description,
+    itemPrice: price,
+    salesDate,
   } = bookData;
 
-  return { isbn, title, author, publisherName, coverImageUrl };
+  return {
+    isbn,
+    title,
+    author,
+    publisherName,
+    coverImageUrl,
+    description,
+    price,
+    salesDate,
+  };
 };

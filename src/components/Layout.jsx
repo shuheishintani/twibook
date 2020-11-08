@@ -203,14 +203,6 @@ export default function Layout({ children }) {
             </ListItem>
           </Link>
 
-          <Link href={`/${loginUser?.username}/books`}>
-            <ListItem button disabled={!loginUser}>
-              <ListItemIcon>
-                <ImportContactsIcon />
-              </ListItemIcon>
-              <ListItemText primary="My本棚" />
-            </ListItem>
-          </Link>
 
           <Link href={`/${loginUser?.username}/friends`}>
             <ListItem button disabled={!loginUser}>
@@ -227,6 +219,16 @@ export default function Layout({ children }) {
               <ListItemText primary="友達" />
             </ListItem>
           </Link>
+
+          <Link href={`/${loginUser?.username}/books`}>
+            <ListItem button disabled={!loginUser}>
+              <ListItemIcon>
+                <ImportContactsIcon />
+              </ListItemIcon>
+              <ListItemText primary="My本棚" />
+            </ListItem>
+          </Link>
+
 
           <Link href={`/${loginUser?.username}/notifications`}>
             <ListItem button disabled={!loginUser}>
