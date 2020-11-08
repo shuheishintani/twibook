@@ -27,6 +27,7 @@ export const fetchBooksByKeyword = async (title, author, page) => {
       } = bookData;
       return { isbn, title, author, publisherName, coverImageUrl };
     });
+    console.log(books);
     return books;
   } catch (e) {
     throw new Error('Failed data fetching');
@@ -39,8 +40,6 @@ export const fetchBookByIsbn = async isbnInput => {
   const response = await fetch(url);
   const data = await response.json();
   const bookData = data.Items.map(val => val.Item)[0];
-
-  console.log(bookData);
 
   const {
     isbn,

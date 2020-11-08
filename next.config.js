@@ -7,6 +7,6 @@ module.exports = {
     return config;
   },
   images: {
-    domains: ['thumbnail.image.rakuten.co.jp'],
+    domains: ['https://thumbnail.image.rakuten.co.jp'],
   },
 };
