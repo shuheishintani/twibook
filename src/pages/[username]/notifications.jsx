@@ -3,6 +3,7 @@ import { useRecoilValue } from 'recoil';
 import { loginUserState, loginUserNotificationsState } from '@/recoil/atoms';
 import { useRouter } from 'next/router';
 import moment from 'moment-timezone';
+import { Divider, Typography, Box } from '@material-ui/core';
 
 const Notification = () => {
   const loginUser = useRecoilValue(loginUserState);
@@ -40,11 +41,17 @@ const Notification = () => {
 
   return (
     <>
+      <Typography variant="subtitle1">新着通知</Typography>
+      <Box m={3} />
       {formattedAddBookNotifications &&
         formattedAddBookNotifications.map((notification, index) => (
           <div key={index}>
-            <p>{notification.message}</p>
+            <p>
+              {notification.message}{' '}
+              <span style={{ color: '#2196f3' }}>new!</span>
+            </p>
             <p>{notification.createdAt}</p>
+            <Divider />
           </div>
         ))}
     </>

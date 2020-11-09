@@ -3,12 +3,12 @@ import { dbAdmin } from '@/firebase/admin';
 import { useRecoilValue } from 'recoil';
 import { loginUserState } from '@/recoil/atoms';
 import FriendList from '@/components/FriendList';
+import { Box, Avatar, Typography } from '@material-ui/core';
 
 const Friends = ({ friendListOwner, friendListOwnerFriends }) => {
   const loginUser = useRecoilValue(loginUserState);
 
   useEffect(() => {
-    console.log('hoge');
     if (loginUser && loginUser.uid === friendListOwner.uid) {
       fetch(`/api/firestore/users/${loginUser.uid}/readNotification`, {
         method: 'POST',
@@ -26,7 +26,17 @@ const Friends = ({ friendListOwner, friendListOwnerFriends }) => {
 
   return (
     <>
-      <p>{friendListOwner.displayName}さんの友達</p>
+      <Box flexGrow={1}>
+        <Box display="flex" alignItems="flex-end">
+          <Avatar alt="profile-img" src={friendListOwner.profileImageUrl} />
+          <Box m={1} />
+          <Typography variant="subtitle1">
+            {friendListOwner.displayName}さんの友達
+          </Typography>
+          <Box m={1} />
+        </Box>
+      </Box>
+      <Box m={3} />
       <FriendList friends={friendListOwnerFriends} />
     </>
   );

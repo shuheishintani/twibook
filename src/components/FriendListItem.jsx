@@ -11,6 +11,7 @@ import {
   Typography,
   Avatar,
   Box,
+  CircularProgress,
 } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
@@ -68,7 +69,26 @@ const FriendListItem = ({ friendId }) => {
   }, [friendBooks, loginUserBooks]);
 
   if (!friend) {
-    return <p>Loading...</p>;
+    return (
+      <Grid item>
+        <Box boxShadow={7}>
+          <Card className={classes.root} variant="outlined">
+            <CardContent className={classes.content}>
+              <Grid
+                container
+                spacing={0}
+                direction="column"
+                alignItems="center"
+                justify="center"
+                style={{ minHeight: '90px' }}
+              >
+                <CircularProgress />
+              </Grid>
+            </CardContent>
+          </Card>
+        </Box>
+      </Grid>
+    );
   }
 
   return (

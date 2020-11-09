@@ -1,10 +1,12 @@
 import React, { useState, useCallback } from 'react';
 import { TextField, Box, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
+import { Grid, CircularProgress } from '@material-ui/core';
 import BookCard from '@/components/BookCard';
 import { fetchBooksByKeyword } from '@/lib/rakutenBookApi';
 import InfiniteScroll from 'react-infinite-scroller';
+
+console.log(process.env.FIREBASE_ADMIN_PRIVATE_KEY);
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -84,43 +86,48 @@ const Search = () => {
   return (
     <>
       <form noValidate autoComplete="off">
-        <Box display="flex" alignItems="flex-end">
-          <TextField
-            id="filled-basic"
-            variant="filled"
-            color="secondary"
-            label="タイトル"
-            value={title}
-            onChange={handleTitleInput}
-            className={classes.root}
-          />
-          <Box m={1} />
-          <TextField
-            id="filled-basic"
-            variant="filled"
-            color="secondary"
-            label="著者"
-            value={author}
-            onChange={handleAuthorInput}
-            className={classes.root}
-          />
-          <Box m={1} />
-          <Button
-            type="submit"
-            variant="outlined"
-            onClick={handleSubmit}
-            className={classes.submitBtn}
-          >
-            検索
-          </Button>
-          <Box m={1} />
-          <Button
-            variant="outlined"
-            onClick={handleClear}
-            className={classes.submitBtn}
-          >
-            クリア
-          </Button>
+        <Box display="flex" alignItems="flex-end" flexWrap="wrap">
+          <Box m={1}>
+            <TextField
+              id="filled-basic"
+              variant="filled"
+              color="primary"
+              label="タイトル"
+              value={title}
+              onChange={handleTitleInput}
+              className={classes.root}
+            />
+          </Box>
+          <Box m={1}>
+            <TextField
+              id="filled-basic"
+              variant="filled"
+              color="primary"
+              label="著者"
+              value={author}
+              onChange={handleAuthorInput}
+              className={classes.root}
+            />
+          </Box>
+          <Box m={1}>
+            <Button
+              type="submit"
+              variant="outlined"
+              onClick={handleSubmit}
+              className={classes.submitBtn}
+            >
+              検索
+            </Button>
+          </Box>
+          <Box m={1}>
+            <Button
+              variant="outlined"
+              onClick={handleClear}
+              className={classes.submitBtn}
+            >
+              クリア
+            </Button>
+          </Box>
         </Box>
       </form>
 
@@ -137,7 +144,12 @@ const Search = () => {
           ))}
         </Grid>
       </InfiniteScroll>
-      {loading && <p>Loading...</p>}
+      <Box m={3} />
+      {loading && (
+        <Grid container justify="center">
+          <CircularProgress />
+        </Grid>
+      )}
     </>
   );
 };

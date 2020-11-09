@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
 import { useRecoilValue, useRecoilState } from 'recoil';
 import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Grid, Box, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
@@ -61,24 +60,12 @@ const BookListItem = ({
         <Box display="flex" alignItems="flex-start">
           <Link href={`/books/${book.isbn}`}>
             {!isMyList && isShared ? (
-              <Box boxShadow={7} border={3} borderColor="primary.main" borderRadius={3}>
-                <Image
-                  src={coverImageUrl}
-                  alt="cover image"
-                  width={105}
-                  height={148}
-                  loading="lazy"
-                />
+              <Box boxShadow={7} border={3} borderColor="#1de9b6" borderRadius={3}>
+                <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
               </Box>
             ) : (
                 <Box boxShadow={7}>
-                  <Image
-                    src={coverImageUrl}
-                    alt="cover image"
-                    width={105}
-                    height={148}
-                    loading="lazy"
-                  />
+                  <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
                 </Box>
               )}
           </Link>

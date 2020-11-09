@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { dbAdmin } from '@/firebase/admin';
 import Link from 'next/link';
 import { fetchBookByIsbn } from '@/lib/rakutenBookApi';
@@ -19,12 +18,11 @@ const BookDetail = ({ book, readers }) => {
   return (
     <>
       <Box display="flex">
-        <Image
+        <img
           src={book.coverImageUrl}
-          alt="Picture of the author"
-          width={105}
-          height={148}
-          loading="lazy"
+          alt="cover_img"
+          width="105"
+          height="148"
         />
         <Box m={1} />
         <Box>

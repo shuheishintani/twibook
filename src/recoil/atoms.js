@@ -15,6 +15,11 @@ export const loginUserBooksState = atom({
   default: [],
 });
 
+export const loginUserSubscribeState = atom({
+  key: 'loginUserSubscribe',
+  default: [],
+});
+
 export const loginUserNotificationsState = atom({
   key: 'loginUserNotifications',
   default: [],

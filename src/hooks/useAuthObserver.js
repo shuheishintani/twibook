@@ -4,6 +4,7 @@ import { useRecoilState } from 'recoil';
 import {
   loginUserState,
   loginUserFriendsState,
+  loginUserSubscribeState,
   loginUserBooksState,
 } from '@/recoil/atoms';
 
@@ -12,11 +13,12 @@ export default function useAuthObserver() {
   const [loginUserFriends, setLoginUserFriends] = useRecoilState(
     loginUserFriendsState
   );
+  const [loginUserSubscribe, setLoginUserSubscribe] = useRecoilState(
+    loginUserSubscribeState
+  );
   const [loginUserBooks, setLoginUserBooks] = useRecoilState(
     loginUserBooksState
   );
-
-  console.log(loginUser);
 
   useEffect(() => {
     if (loginUser) {
@@ -45,6 +47,17 @@ export default function useAuthObserver() {
           });
 
         loginUserRef
+          .collection('subscribe')
+          .get()
+          .then(snapshot => {
+            let subscribe = [];
+            snapshot.forEach(doc => {
+              subscribe.push(doc.data());
+            });
+            setLoginUserSubscribe(subscribe);
+          });
+
+        loginUserRef
           .collection('books')
           .get()
           .then(snapshot => {
@@ -59,7 +72,13 @@ export default function useAuthObserver() {
     return () => {
       unlisten();
     };
-  }, [loginUser, setLoginUser, setLoginUserBooks, setLoginUserFriends]);
+  }, [
+    loginUser,
+    setLoginUser,
+    setLoginUserBooks,
+    setLoginUserFriends,
+    setLoginUserSubscribe,
+  ]);
 
   return [loginUser, loginUserFriends, loginUserBooks];
 }

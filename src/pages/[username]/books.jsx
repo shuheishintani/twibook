@@ -1,9 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
-import firebase, { db } from '@/firebase/client';
+import { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
-import { useRecoilValue } from 'recoil';
-import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
-
+import { useRecoilValue, useRecoilState } from 'recoil';
+import {
+  loginUserState,
+  loginUserBooksState,
+  loginUserSubscribeState,
+} from '@/recoil/atoms';
+import Link from 'next/link';
 import BookList from '@/components/BookList';
 import {
   FormControlLabel,
@@ -14,8 +18,12 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  IconButton,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+  ExpandMore as ExpandMoreIcon,
+  Twitter as TwitterIcon,
+} from '@material-ui/icons';
 
 const Books = ({ bookListOwner, bookListOwnerBooks }) => {
   const [isMyList, setIsMyList] = useState(false);
@@ -24,6 +32,16 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
   const [subscribe, setSubscribe] = useState(false);
   const loginUser = useRecoilValue(loginUserState);
   const loginUserBooks = useRecoilValue(loginUserBooksState);
+  const [loginUserSubscribe, setLoginUserSubscribe] = useRecoilState(
+    loginUserSubscribeState
+  );
+
+  useEffect(() => {
+    if (loginUser && bookListOwner && loginUserSubscribe.length !== 0) {
+      const loginUserSubscribeIds = loginUserSubscribe.map(user => user.uid);
+      setSubscribe(loginUserSubscribeIds.includes(bookListOwner.uid));
+    }
+  }, [bookListOwner, loginUser, loginUserSubscribe]);
 
   useEffect(() => {
     if (loginUserBooks && bookListOwnerBooks) {
@@ -70,9 +88,11 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
     });
 
     Promise.all([promise1, promise2]).then(() => {
+      setLoginUserSubscribe(prev => [...prev, { uid: bookListOwner.uid }]);
+
       setSubscribe(true);
     });
-  }, [bookListOwner, loginUser]);
+  }, [bookListOwner, loginUser, setLoginUserSubscribe]);
 
   const handleUnSubscribe = useCallback(() => {
     const promise1 = new Promise((resolve, reject) => {
@@ -94,9 +114,12 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
     });
 
     Promise.all([promise1, promise2]).then(() => {
+      setLoginUserSubscribe(prev =>
+        prev.filter(user => user.uid !== bookListOwner.uid)
+      );
       setSubscribe(false);
     });
-  }, [bookListOwner, loginUser]);
+  }, [bookListOwner, loginUser, setLoginUserSubscribe]);
 
   if (!bookListOwner) {
     return <p>ユーザーが存在しません</p>;
@@ -112,6 +135,16 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
             <Typography variant="subtitle1">
               {bookListOwner.displayName}さんの本棚
             </Typography>
+            <Box m={1} />
+            <IconButton
+              size="small"
+              style={{ color: '#1DA1F2' }}
+              onClick={() => {
+                window.open(`https://twitter.com/${bookListOwner.username}`);
+              }}
+            >
+              <TwitterIcon />
+            </IconButton>
           </Box>
         </Box>
 

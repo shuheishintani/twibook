@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { db } from '@/firebase/client';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
-import Image from 'next/image';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -108,13 +107,7 @@ const BookCard = ({ book }) => {
       <Grid item>
         <Box boxShadow={7}>
           <Card className={classes.root}>
-            <Image
-              src={coverImageUrl}
-              alt="Picture of the author"
-              width="105"
-              height="148"
-              loading="lazy"
-            />
+            <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
             <div className={classes.details}>
               <CardContent className={classes.content}>
                 <Typography variant="subtitle1">{title}</Typography>

@@ -1,0 +1,236 @@
+/* eslint-disable prettier/prettier */
+import { useState, useEffect } from 'react';
+import { db } from '@/firebase/client'
+import clsx from 'clsx';
+import { loginUserState, loginUserNotificationsState } from '@/recoil/atoms'
+import { useRecoilValue, useRecoilState } from 'recoil';
+import useAuthObserver from '@/hooks/useAuthObserver';
+import useAuthMethods from '@/hooks/useAuthMethods';
+import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import List from '@material-ui/core/List';
+import Divider from '@material-ui/core/Divider';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/icons/Menu';
+import Avatar from '@material-ui/core/Avatar';
+import TwitterIcon from '@material-ui/icons/Twitter';
+import PersonIcon from '@material-ui/icons/Person';
+import PeopleIcon from '@material-ui/icons/People';
+import QueueMusicIcon from '@material-ui/icons/QueueMusic';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import Link from 'next/link';
+import SearchIcon from '@material-ui/icons/Search';
+import Box from '@material-ui/core/Box';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
+import NotificationsIcon from '@material-ui/icons/Notifications';
+import Badge from '@material-ui/core/Badge';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: 'flex',
+  },
+  appBar: {
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  list: {
+    width: 250,
+  },
+  dividerColor: {
+    backgroundColor: '#2196f3',
+  },
+}));
+
+export default function MobileLayout({ children }) {
+  const classes = useStyles();
+  const [state, setState] = useState(false);
+  const [notifications, setNotifications] = useState([])
+  const theme = useTheme();
+  const [loginUser] = useAuthObserver();
+  const [login, logout] = useAuthMethods();
+  const [open, setOpen] = useState(true);
+  const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(loginUserNotificationsState)
+
+  useEffect(() => {
+    if (loginUser) {
+      const unsub = db
+        .doc(`users/${loginUser.uid}`)
+        .collection('notifications')
+        .orderBy('createdAt', 'desc')
+        .onSnapshot(snapshot => {
+          let data = [];
+          snapshot.forEach(doc => {
+            data.push(doc.data());
+          });
+          setLoginUserNotifications(data);
+        });
+      return () => unsub();
+    } else {
+      setLoginUserNotifications([]);
+    }
+  }, [loginUser, setLoginUserNotifications]);
+
+  const addBookNotifications =
+    loginUserNotifications &&
+    loginUserNotifications.filter(
+      notification =>
+        notification.unread === true && notification.type === 'addBook'
+    );
+  const newEntryNotifications =
+    loginUserNotifications &&
+    loginUserNotifications.filter(
+      notification =>
+        notification.unread === true && notification.type === 'newEntry'
+    );
+  const toggleDrawer = () => event => {
+    if (
+      event &&
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setState(!state);
+  };
+
+  const list = () => (
+    <div
+      className={clsx(classes.list)}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+
+      <div>
+        {loginUser && (
+          <IconButton edge="end" color="inherit">
+            <Avatar alt="profile-img" src={loginUser.profileImageUrl} />
+          </IconButton>
+        )}
+      </div>
+      <Divider />
+      <List>
+        <Link href={`/${loginUser?.username}/profile`}>
+          <ListItem button disabled={!loginUser}>
+            <ListItemIcon>
+              <PersonIcon />
+            </ListItemIcon>
+            <ListItemText primary='プロフィール' />
+          </ListItem>
+        </Link>
+
+
+        <Link href={`/${loginUser?.username}/friends`}>
+          <ListItem button disabled={!loginUser}>
+            <ListItemIcon>
+
+              <Badge badgeContent={newEntryNotifications && newEntryNotifications.length} color="primary">
+                <PeopleIcon />
+
+              </Badge>
+            </ListItemIcon>
+            <ListItemText primary='友達' />
+          </ListItem>
+        </Link>
+
+
+        <Link href={`/${loginUser?.username}/books`}>
+          <ListItem button disabled={!loginUser}>
+            <ListItemIcon>
+              <ImportContactsIcon />
+            </ListItemIcon>
+            <ListItemText primary='My本棚' />
+          </ListItem>
+        </Link>
+
+        <Link href={`/${loginUser?.username}/notifications`}>
+          <ListItem button disabled={!loginUser}>
+            <ListItemIcon>
+              <Badge badgeContent={addBookNotifications && addBookNotifications.length} color="primary">
+                <NotificationsIcon />
+              </Badge>
+            </ListItemIcon>
+            <ListItemText primary='通知' />
+          </ListItem>
+        </Link>
+
+        <Link href='/search'>
+          <ListItem button>
+            <ListItemIcon>
+              <SearchIcon />
+            </ListItemIcon>
+            <ListItemText primary='検索' />
+          </ListItem>
+        </Link>
+
+      </List>
+      <Divider />
+      <List>
+        {loginUser ? (
+          <ListItem button onClick={logout} >
+            <ListItemIcon>
+              <ExitToAppIcon />
+            </ListItemIcon>
+            <ListItemText primary='ログアウト' />
+          </ListItem>
+        ) : (
+            <ListItem button onClick={login} >
+              <ListItemIcon>
+                <TwitterIcon />
+              </ListItemIcon>
+              <ListItemText primary='ログイン' />
+            </ListItem>
+          )}
+      </List>
+    </div>
+  );
+
+  return (
+    <div className="root">
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: state,
+        })}
+        color="inherit"
+        elevation={0}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={toggleDrawer()}
+            edge="start"
+            className={clsx(classes.menuButton, state && classes.hide)}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap>
+            TwiBook
+          </Typography>
+        </Toolbar>
+        <Divider />
+      </AppBar>
+      <SwipeableDrawer
+        anchor="left"
+        open={state}
+        onClose={toggleDrawer()}
+        onOpen={toggleDrawer()}
+      >
+        {list('left')}
+      </SwipeableDrawer>
+      <Box m={10} />
+      <Box m={3}>{children}</Box>
+    </div>
+  );
+}
