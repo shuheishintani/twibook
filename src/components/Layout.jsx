@@ -230,7 +230,7 @@ export default function Layout({ children }) {
           </Link>
 
 
-          <Link href={`/${loginUser?.username}/notifications`}>
+          <Link href={`/${loginUser?.username}/notifications/1`}>
             <ListItem button disabled={!loginUser}>
               <ListItemIcon>
                 <Badge

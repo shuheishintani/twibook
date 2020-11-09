@@ -98,17 +98,24 @@ const FriendListItem = ({ friendId }) => {
           <Card className={classes.root} variant="outlined">
             <div className={classes.details}>
               <CardContent className={classes.content}>
-                <Box display="flex">
-                  <Avatar alt="profile-img" src={friend.profileImageUrl} />
-                  <Box m={1} />
-                  <Box>
-                    <Typography variant="subtitle1">
-                      {friend.displayName}
-                    </Typography>
-                    <Typography variant="subtitle2" color="textSecondary">
-                      @{friend.username}
-                    </Typography>
+                <Box display="flex" alignItems="flex-start">
+                  <Box display="flex" flexGrow={1}>
+                    <Avatar alt="profile-img" src={friend.profileImageUrl} />
+                    <Box m={1} />
+                    <Box>
+                      <Typography variant="subtitle1">
+                        {friend.displayName}
+                      </Typography>
+                      <Typography variant="subtitle2" color="textSecondary">
+                        @{friend.username}
+                      </Typography>
+                    </Box>
                   </Box>
+                  {friend.createdAt > Date.now() - 86400000 && (
+                    <Typography variant="subtitle2" color="secondary">
+                      new!
+                    </Typography>
+                  )}
                 </Box>
                 <Box m={2} />
                 {sharedBooks.length !== 0 && (

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { db } from '@/firebase/client';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
+import Link from 'next/link';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import {
@@ -39,6 +40,12 @@ const useStyles = makeStyles(() => ({
   },
   addBtn: {
     height: '45px',
+  },
+  hoverUnderline: {
+    '&:hover': {
+      textDecoration: 'underline',
+      cursor: 'pointer',
+    },
   },
 }));
 
@@ -110,13 +117,14 @@ const BookCard = ({ book }) => {
             <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
             <div className={classes.details}>
               <CardContent className={classes.content}>
-                <Typography variant="subtitle1">{title}</Typography>
-                <Typography variant="subtitle2" color="textSecondary">
-                  {author}
-                </Typography>
-                <Typography variant="subtitle2" color="textSecondary">
-                  {publisherName}
-                </Typography>
+                <Link href={`/books/${book.isbn}`}>
+                  <div className={classes.hoverUnderline}>
+                    <Typography variant="subtitle1">{title}</Typography>
+                    <Typography variant="subtitle2" color="textSecondary">
+                      {author}（{publisherName}）
+                    </Typography>
+                  </div>
+                </Link>
               </CardContent>
             </div>
             {loginUser && (

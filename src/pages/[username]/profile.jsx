@@ -1,14 +1,40 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { auth } from '@/firebase/client';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
 import { useRouter } from 'next/router';
-import { Button, Box, Avatar, Typography } from '@material-ui/core';
+import {
+  Button,
+  Box,
+  Avatar,
+  Typography,
+  Modal,
+  Backdrop,
+  Fade,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  modal: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  paper: {
+    backgroundColor: theme.palette.background.paper,
+    border: '2px solid #000',
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 const Profile = () => {
   const router = useRouter();
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
   const loginUserBooks = useRecoilValue(loginUserBooksState);
+  const [open, setOpen] = useState(false);
+
+  const classes = useStyles();
 
   useEffect(() => {
     if (!loginUser) {
@@ -26,6 +52,14 @@ const Profile = () => {
       await auth.currentUser.delete();
       setLoginUser(null);
     }
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
   };
 
   if (!loginUser) {
@@ -49,9 +83,36 @@ const Profile = () => {
         登録している本の数: {loginUserBooks.length}冊
       </Typography>
       <Box m={3} />
-      <Button variant="outlined" color="secondary" onClick={deleteUser}>
+      <Button variant="outlined" color="secondary" onClick={handleOpen}>
         アカウントを削除する
       </Button>
+      <Modal
+        aria-labelledby="transition-modal-title"
+        aria-describedby="transition-modal-description"
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+        BackdropComponent={Backdrop}
+        BackdropProps={{
+          timeout: 500,
+        }}
+      >
+        <Fade in={open}>
+          <div className={classes.paper}>
+            <h3 id="transition-modal-title">本当に削除しますか？</h3>
+            <Box display="flex" justifyContent="center">
+              <Button variant="outlined" onClick={deleteUser}>
+                はい
+              </Button>
+              <Box m={1} />
+              <Button variant="outlined" onClick={handleClose}>
+                いいえ
+              </Button>
+            </Box>
+          </div>
+        </Fade>
+      </Modal>
     </>
   );
 };

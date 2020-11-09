@@ -153,7 +153,7 @@ export default function MobileLayout({ children }) {
           </ListItem>
         </Link>
 
-        <Link href={`/${loginUser?.username}/notifications`}>
+        <Link href={`/${loginUser?.username}/notifications/1`}>
           <ListItem button disabled={!loginUser}>
             <ListItemIcon>
               <Badge badgeContent={addBookNotifications && addBookNotifications.length} color="primary">
