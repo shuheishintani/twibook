@@ -81,7 +81,7 @@ const BookDetail = ({ book, readers }) => {
       <Box m={3} />
       <Typography variant="subtitle2">この本を読んだ友達</Typography>
       <Box m={1} />
-      {readers && (
+      {readers.length !== 0 && (
         <AvatarGroup>
           {readers.map(reader => (
             <motion.div
@@ -127,6 +127,24 @@ export const getServerSideProps = async ctx => {
       });
       return readerIds;
     });
+
+  if (readerIds.length === 0) {
+    return {
+      props: {
+        book: {
+          isbn,
+          title,
+          author,
+          publisherName,
+          coverImageUrl,
+          description,
+          price,
+          salesDate,
+        },
+        readers: [],
+      },
+    };
+  }
 
   const readerRefs = readerIds.map(id => dbAdmin.doc(`users/${id}`));
   const readers = await dbAdmin.getAll(...readerRefs).then(snapshot => {
