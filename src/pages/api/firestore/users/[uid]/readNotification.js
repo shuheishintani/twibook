@@ -1,9 +1,8 @@
 import { dbAdmin } from '@/firebase/admin';
 
 export default async (req, res) => {
-  if (req.method === 'POST') {
+  if (req.method === 'PATCH') {
     const { uid } = req.query;
-    const { type } = req.body;
     const batch = dbAdmin.batch();
 
     const unreadNotificationsSnapshot = await dbAdmin
@@ -19,7 +18,6 @@ export default async (req, res) => {
     const selectedNotificationsSnapshot = await dbAdmin
       .doc(`users/${uid}`)
       .collection('notifications')
-      .where('type', '==', type)
       .get();
 
     const selectedNotificationIds = selectedNotificationsSnapshot.docs.map(

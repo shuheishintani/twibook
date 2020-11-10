@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
-import { useRecoilState } from 'recoil'
-import { loginUserNotificationsState } from '@/recoil/atoms'
+import { useRecoilState } from 'recoil';
+import { loginUserNotificationsState } from '@/recoil/atoms';
 import useAuthObserver from '@/hooks/useAuthObserver';
 import useAuthMethods from '@/hooks/useAuthMethods';
 import Link from 'next/link';
@@ -104,7 +104,9 @@ export default function Layout({ children }) {
   const [loginUser] = useAuthObserver();
   const [login, logout] = useAuthMethods();
   const [open, setOpen] = useState(true);
-  const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(loginUserNotificationsState)
+  const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(
+    loginUserNotificationsState
+  );
 
   useEffect(() => {
     if (loginUser) {
@@ -125,18 +127,9 @@ export default function Layout({ children }) {
     }
   }, [loginUser, setLoginUserNotifications]);
 
-  const addBookNotifications =
+  const unreadNotifications =
     loginUserNotifications &&
-    loginUserNotifications.filter(
-      notification =>
-        notification.unread === true && notification.type === 'addBook'
-    );
-  const newEntryNotifications =
-    loginUserNotifications &&
-    loginUserNotifications.filter(
-      notification =>
-        notification.unread === true && notification.type === 'newEntry'
-    );
+    loginUserNotifications.filter(notification => notification.unread === true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -203,18 +196,10 @@ export default function Layout({ children }) {
             </ListItem>
           </Link>
 
-
           <Link href={`/${loginUser?.username}/friends`}>
             <ListItem button disabled={!loginUser}>
               <ListItemIcon>
-                <Badge
-                  badgeContent={
-                    newEntryNotifications && newEntryNotifications.length
-                  }
-                  color="primary"
-                >
-                  <PeopleIcon />
-                </Badge>
+                <PeopleIcon />
               </ListItemIcon>
               <ListItemText primary="友達" />
             </ListItem>
@@ -229,13 +214,12 @@ export default function Layout({ children }) {
             </ListItem>
           </Link>
 
-
           <Link href={`/${loginUser?.username}/notifications/1`}>
             <ListItem button disabled={!loginUser}>
               <ListItemIcon>
                 <Badge
                   badgeContent={
-                    addBookNotifications && addBookNotifications.length
+                    unreadNotifications && unreadNotifications.length
                   }
                   color="primary"
                 >

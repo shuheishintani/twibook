@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
-import { useRecoilValue } from 'recoil';
-import { loginUserState } from '@/recoil/atoms';
 import useSWR from 'swr';
 import FriendList from '@/components/FriendList';
 import { Box, Avatar, Typography } from '@material-ui/core';
@@ -21,7 +19,6 @@ const fetchFriendsByUid = async uid => {
 };
 
 const Friends = ({ friendListOwner }) => {
-  const loginUser = useRecoilValue(loginUserState);
   const [friends, setFriends] = useState([]);
   const { data, error } = useSWR(`/${friendListOwner}/friends`, () =>
     fetchFriendsByUid(friendListOwner.uid)
@@ -30,18 +27,6 @@ const Friends = ({ friendListOwner }) => {
   useEffect(() => {
     data && setFriends(data.friends);
   }, [data]);
-
-  useEffect(() => {
-    if (loginUser && loginUser.uid === friendListOwner.uid) {
-      fetch(`/api/firestore/users/${loginUser.uid}/readNotification`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ type: 'newEntry' }),
-      });
-    }
-  }, [friendListOwner, loginUser]);
 
   if (!friendListOwner) {
     return <p>ユーザーが存在しません</p>;

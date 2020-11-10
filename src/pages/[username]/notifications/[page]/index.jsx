@@ -22,11 +22,10 @@ const Notification = ({ notifications }) => {
   useEffect(() => {
     if (loginUser) {
       fetch(`/api/firestore/users/${loginUser.uid}/readNotification`, {
-        method: 'POST',
+        method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ type: 'addBook' }),
       });
     }
   }, [loginUser]);

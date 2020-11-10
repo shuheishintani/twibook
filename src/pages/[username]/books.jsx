@@ -49,7 +49,7 @@ const Books = ({ bookListOwner }) => {
   const [loginUserSubscribe, setLoginUserSubscribe] = useRecoilState(
     loginUserSubscribeState
   );
-  const { data, error } = useSWR(`/${bookListOwner}/friends`, () =>
+  const { data, error } = useSWR(`/${bookListOwner}/books`, () =>
     fetchBooksByUid(bookListOwner.uid)
   );
 
