@@ -1,4 +1,6 @@
 import React, { useState, useCallback } from 'react';
+import { useRecoilState } from 'recoil';
+import { searchedBooksState } from '@/recoil/atoms';
 import { TextField, Box, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, CircularProgress } from '@material-ui/core';
@@ -17,7 +19,7 @@ const useStyles = makeStyles(() => ({
 
 const Search = () => {
   const classes = useStyles();
-  const [books, setBooks] = useState([]);
+  const [books, setBooks] = useRecoilState(searchedBooksState);
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [page, setPage] = useState(1);
@@ -53,7 +55,7 @@ const Search = () => {
         setLoading(false);
       }
     },
-    [author, title]
+    [author, setBooks, title]
   );
 
   const handleNextLoad = useCallback(async () => {
@@ -73,7 +75,7 @@ const Search = () => {
       setHasMore(false);
       setLoading(false);
     }
-  }, [author, page, title]);
+  }, [author, page, setBooks, title]);
 
   const handleClear = useCallback(() => {
     setTitle('');

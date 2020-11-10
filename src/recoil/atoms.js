@@ -24,3 +24,8 @@ export const loginUserNotificationsState = atom({
   key: 'loginUserNotifications',
   default: [],
 });
+
+export const searchedBooksState = atom({
+  key: 'searchedBooks',
+  default: [],
+});

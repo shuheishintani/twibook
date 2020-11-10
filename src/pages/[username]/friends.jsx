@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
 import useSWR from 'swr';
+import { useRouter } from 'next/router';
 import FriendList from '@/components/FriendList';
 import { Box, Avatar, Typography } from '@material-ui/core';
 
@@ -20,7 +21,9 @@ const fetchFriendsByUid = async uid => {
 
 const Friends = ({ friendListOwner }) => {
   const [friends, setFriends] = useState([]);
-  const { data, error } = useSWR(`/${friendListOwner}/friends`, () =>
+  const router = useRouter();
+  const { username } = router.query;
+  const { data, error } = useSWR(`/${username}/friends`, () =>
     fetchFriendsByUid(friendListOwner.uid)
   );
 

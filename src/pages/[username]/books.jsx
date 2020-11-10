@@ -8,6 +8,7 @@ import {
   loginUserSubscribeState,
 } from '@/recoil/atoms';
 import useSWR from 'swr';
+import { useRouter } from 'next/router';
 import BookList from '@/components/BookList';
 import {
   FormControlLabel,
@@ -49,7 +50,9 @@ const Books = ({ bookListOwner }) => {
   const [loginUserSubscribe, setLoginUserSubscribe] = useRecoilState(
     loginUserSubscribeState
   );
-  const { data, error } = useSWR(`/${bookListOwner}/books`, () =>
+  const router = useRouter();
+  const { username } = router.query;
+  const { data, error } = useSWR(`/${username}/books`, () =>
     fetchBooksByUid(bookListOwner.uid)
   );
 

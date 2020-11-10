@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { dbAdmin } from '@/firebase/admin';
+import { useRecoilValue } from 'recoil';
+import { loginUserState, loginUserFriendsState } from '@/recoil/atoms';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { fetchBookByIsbn } from '@/lib/rakutenBookApi';
@@ -37,11 +39,38 @@ const BookDetail = ({ readers }) => {
   const router = useRouter();
   const { isbn } = router.query;
   const [book, setBook] = useState(null);
+  const [friendReaders, setFriendReaders] = useState([]);
+  const [unknownReaders, setUnknownReaders] = useState([]);
+  const loginUserFriends = useRecoilValue(loginUserFriendsState);
+  const loginUser = useRecoilValue(loginUserState);
   const { data, error } = useSWR(`/books/${isbn}`, () => fetchBookByIsbn(isbn));
 
   useEffect(() => {
     data && setBook(data.book);
   }, [data]);
+
+  useEffect(() => {
+    if (loginUserFriends) {
+      const loginUserFriendIds = loginUserFriends.map(friend => friend.uid);
+      setFriendReaders(
+        readers.filter(
+          reader =>
+            loginUserFriendIds.includes(reader.uid) &&
+            reader.uid !== loginUser.uid
+        )
+      );
+      setUnknownReaders(
+        readers.filter(
+          reader =>
+            !loginUserFriendIds.includes(reader.uid) &&
+            reader.uid !== loginUser.uid
+        )
+      );
+    }
+  }, [loginUser, loginUserFriends, readers]);
+
+  console.log({ friendReaders });
+  console.log({ unknownReaders });
 
   if (!data) {
     return <p>Loading...</p>;
@@ -100,22 +129,47 @@ const BookDetail = ({ readers }) => {
 
           <Divider />
           <Box m={3} />
-          <Typography variant="subtitle2">この本を読んだ友達</Typography>
-          <Box m={1} />
-          {readers.length !== 0 && (
-            <AvatarGroup>
-              {readers.map(reader => (
-                <motion.div
-                  key={reader.uid}
-                  whileHover={{ scale: 1.1 }}
-                  className={classes.root}
-                >
-                  <Link href={`/${reader.username}/books`}>
-                    <Avatar alt="profile-img" src={reader.profileImageUrl} />
-                  </Link>
-                </motion.div>
-              ))}
-            </AvatarGroup>
+
+          {friendReaders.length !== 0 && (
+            <>
+              <Typography variant="subtitle2">この本を読んだ友達</Typography>
+              <Box m={1} />
+              <AvatarGroup>
+                {friendReaders.map(reader => (
+                  <motion.div
+                    key={reader.uid}
+                    whileHover={{ scale: 1.1 }}
+                    className={classes.root}
+                  >
+                    <Link href={`/${reader.username}/books`}>
+                      <Avatar alt="profile-img" src={reader.profileImageUrl} />
+                    </Link>
+                  </motion.div>
+                ))}
+              </AvatarGroup>
+            </>
+          )}
+          <Box m={3} />
+          {unknownReaders.length !== 0 && (
+            <>
+              <Typography variant="subtitle2">
+                この本を読んだユーザー
+              </Typography>
+              <Box m={1} />
+              <AvatarGroup max={30}>
+                {unknownReaders.map(reader => (
+                  <motion.div
+                    key={reader.uid}
+                    whileHover={{ scale: 1.1 }}
+                    className={classes.root}
+                  >
+                    <Link href={`/${reader.username}/books`}>
+                      <Avatar alt="profile-img" src={reader.profileImageUrl} />
+                    </Link>
+                  </motion.div>
+                ))}
+              </AvatarGroup>
+            </>
           )}
         </>
       )}
