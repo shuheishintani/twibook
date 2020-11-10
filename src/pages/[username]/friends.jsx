@@ -1,12 +1,35 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
 import { useRecoilValue } from 'recoil';
 import { loginUserState } from '@/recoil/atoms';
+import useSWR from 'swr';
 import FriendList from '@/components/FriendList';
 import { Box, Avatar, Typography } from '@material-ui/core';
 
-const Friends = ({ friendListOwner, friendListOwnerFriends }) => {
+const fetchFriendsByUid = async uid => {
+  const snapshot = await db
+    .collection('users')
+    .doc(uid)
+    .collection('friends')
+    .get();
+
+  return new Promise((resolve, reject) => {
+    const friends = snapshot.docs.map(doc => doc.data());
+    resolve({ friends });
+  });
+};
+
+const Friends = ({ friendListOwner }) => {
   const loginUser = useRecoilValue(loginUserState);
+  const [friends, setFriends] = useState([]);
+  const { data, error } = useSWR(`/${friendListOwner}/friends`, () =>
+    fetchFriendsByUid(friendListOwner.uid)
+  );
+
+  useEffect(() => {
+    data && setFriends(data.friends);
+  }, [data]);
 
   useEffect(() => {
     if (loginUser && loginUser.uid === friendListOwner.uid) {
@@ -24,63 +47,66 @@ const Friends = ({ friendListOwner, friendListOwnerFriends }) => {
     return <p>ユーザーが存在しません</p>;
   }
 
+  if (!data) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    throw new Error(error);
+  }
+
   return (
     <>
-      <Box flexGrow={1}>
-        <Box display="flex" alignItems="flex-end">
-          <Avatar alt="profile-img" src={friendListOwner.profileImageUrl} />
-          <Box m={1} />
-          <Typography variant="subtitle1">
-            {friendListOwner.displayName}さんの友達
-          </Typography>
-          <Box m={1} />
-        </Box>
-      </Box>
-      <Box m={3} />
-      <FriendList friends={friendListOwnerFriends} />
+      {friends && (
+        <>
+          <Box flexGrow={1}>
+            <Box display="flex" alignItems="flex-end">
+              <Avatar alt="profile-img" src={friendListOwner.profileImageUrl} />
+              <Box m={1} />
+              <Typography variant="subtitle1">
+                {friendListOwner.displayName}さんの友達
+              </Typography>
+              <Box m={1} />
+            </Box>
+          </Box>
+          <Box m={3} />
+          <FriendList friends={friends} />
+        </>
+      )}
     </>
   );
 };
 
-export const getServerSideProps = async ctx => {
-  const { username } = ctx.query;
+export const getStaticPaths = async () => {
+  const usernameList = await dbAdmin
+    .collection('users')
+    .get()
+    .then(snapshot => snapshot.docs.map(doc => doc.data().username));
 
-  const friendListOwner = await dbAdmin
+  return {
+    paths: usernameList.map(username => ({
+      params: {
+        username,
+      },
+    })),
+    fallback: true,
+  };
+};
+
+export const getStaticProps = async ({ params: { username } }) => {
+  const snapshot = await dbAdmin
     .collection('users')
     .where('username', '==', username)
-    .get()
-    .then(snapshot => {
-      let data;
-      snapshot.forEach(doc => {
-        data = doc.data();
-      });
-      return data;
-    });
+    .get();
 
-  if (!friendListOwner) {
-    return {
-      props: {
-        friendListOwner: null,
-      },
-    };
-  }
-
-  const friendListOwnerFriends = await dbAdmin
-    .collection('users')
-    .doc(friendListOwner.uid)
-    .collection('friends')
-    .get()
-    .then(snapshot => {
-      let data = [];
-      snapshot.forEach(doc => data.push(doc.data()));
-      return data;
-    });
+  const friendListOwner =
+    snapshot.docs.length !== 0 ? snapshot.docs[0].data() : null;
 
   return {
     props: {
       friendListOwner,
-      friendListOwnerFriends,
     },
+    revalidate: 1,
   };
 };
 

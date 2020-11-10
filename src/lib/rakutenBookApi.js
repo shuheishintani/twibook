@@ -27,7 +27,6 @@ export const fetchBooksByKeyword = async (title, author, page) => {
       } = bookData;
       return { isbn, title, author, publisherName, coverImageUrl };
     });
-    console.log(books);
     return books;
   } catch (e) {
     throw new Error('Failed data fetching');
@@ -39,27 +38,36 @@ export const fetchBookByIsbn = async isbnInput => {
 
   const response = await fetch(url);
   const data = await response.json();
-  const bookData = data.Items.map(val => val.Item)[0];
 
-  const {
-    isbn,
-    title,
-    author,
-    publisherName,
-    largeImageUrl: coverImageUrl,
-    itemCaption: description,
-    itemPrice: price,
-    salesDate,
-  } = bookData;
+  return new Promise((resolve, reject) => {
+    if (!data) {
+      reject(new Error('No data'));
+    }
 
-  return {
-    isbn,
-    title,
-    author,
-    publisherName,
-    coverImageUrl,
-    description,
-    price,
-    salesDate,
-  };
+    const bookData = data.Items.map(val => val.Item)[0];
+
+    const {
+      isbn,
+      title,
+      author,
+      publisherName,
+      largeImageUrl: coverImageUrl,
+      itemCaption: description,
+      itemPrice: price,
+      salesDate,
+    } = bookData;
+
+    const book = {
+      isbn,
+      title,
+      author,
+      publisherName,
+      coverImageUrl,
+      description,
+      price,
+      salesDate,
+    };
+
+    resolve({ book });
+  });
 };

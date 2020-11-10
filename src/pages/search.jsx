@@ -6,8 +6,6 @@ import BookCard from '@/components/BookCard';
 import { fetchBooksByKeyword } from '@/lib/rakutenBookApi';
 import InfiniteScroll from 'react-infinite-scroller';
 
-console.log(process.env.FIREBASE_ADMIN_PRIVATE_KEY);
-
 const useStyles = makeStyles(() => ({
   root: {
     width: '250px',

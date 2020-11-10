@@ -30,8 +30,6 @@ export default async (req, res) => {
       selectedNotificationIds.includes(id)
     );
 
-    console.log('hoge');
-
     unreadSelectedNotificatioinIds.forEach(id => {
       const unreadSelectedNotificationRef = dbAdmin.doc(
         `/users/${uid}/notifications/${id}`

@@ -22,6 +22,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-router-dom": "^5.2.0",
     "recoil": "^0.0.13",
+    "swr": "^0.3.8",
     "twitter": "^1.7.1"
   },
   "devDependencies": {

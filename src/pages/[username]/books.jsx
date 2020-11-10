@@ -7,7 +7,7 @@ import {
   loginUserBooksState,
   loginUserSubscribeState,
 } from '@/recoil/atoms';
-import Link from 'next/link';
+import useSWR from 'swr';
 import BookList from '@/components/BookList';
 import {
   FormControlLabel,
@@ -25,16 +25,37 @@ import {
   Twitter as TwitterIcon,
 } from '@material-ui/icons';
 
-const Books = ({ bookListOwner, bookListOwnerBooks }) => {
+const fetchBooksByUid = async uid => {
+  const snapshot = await db
+    .collection('users')
+    .doc(uid)
+    .collection('books')
+    .get();
+
+  return new Promise((resolve, reject) => {
+    const books = snapshot.docs.map(doc => doc.data());
+    resolve({ books });
+  });
+};
+
+const Books = ({ bookListOwner }) => {
   const [isMyList, setIsMyList] = useState(false);
   const [onEditMode, setOnEditMode] = useState(false);
   const [sharedBooks, setSharedBooks] = useState([]);
   const [subscribe, setSubscribe] = useState(false);
+  const [books, setBooks] = useState([]);
   const loginUser = useRecoilValue(loginUserState);
   const loginUserBooks = useRecoilValue(loginUserBooksState);
   const [loginUserSubscribe, setLoginUserSubscribe] = useRecoilState(
     loginUserSubscribeState
   );
+  const { data, error } = useSWR(`/${bookListOwner}/friends`, () =>
+    fetchBooksByUid(bookListOwner.uid)
+  );
+
+  useEffect(() => {
+    data && setBooks(data.books);
+  }, [data]);
 
   useEffect(() => {
     if (loginUser && bookListOwner && loginUserSubscribe.length !== 0) {
@@ -44,19 +65,19 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
   }, [bookListOwner, loginUser, loginUserSubscribe]);
 
   useEffect(() => {
-    if (loginUserBooks && bookListOwnerBooks) {
-      const joinedArr = [...loginUserBooks, ...bookListOwnerBooks];
+    if (loginUserBooks && books) {
+      const joinedArr = [...loginUserBooks, ...books];
       const doubleArr = joinedArr.filter(
         item =>
           loginUserBooks.some(book => book.isbn === item.isbn) &&
-          bookListOwnerBooks.some(book => book.isbn === item.isbn)
+          books.some(book => book.isbn === item.isbn)
       );
       const singleArr = doubleArr.filter((item, index, arr) => {
         return arr.findIndex(item2 => item.isbn === item2.isbn) === index;
       });
       setSharedBooks(singleArr);
     }
-  }, [bookListOwnerBooks, loginUserBooks]);
+  }, [books, loginUserBooks]);
 
   useEffect(() => {
     if (loginUser && bookListOwner) {
@@ -125,10 +146,18 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
     return <p>ユーザーが存在しません</p>;
   }
 
+  if (!data) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    throw new Error(error);
+  }
+
   return (
     <>
-      <Box display="flex" alignItems="flex-end">
-        <Box flexGrow={1}>
+      <Box display="flex" alignItems="flex-end" flexWrap="wrap">
+        <Box>
           <Box display="flex" alignItems="flex-end">
             <Avatar alt="profile-img" src={bookListOwner.profileImageUrl} />
             <Box m={1} />
@@ -147,8 +176,12 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
             </IconButton>
           </Box>
         </Box>
+      </Box>
 
-        {isMyList && (
+      <Box m={3} />
+
+      {isMyList && (
+        <>
           <FormControlLabel
             control={
               <Switch
@@ -160,9 +193,12 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
             }
             label={<Typography variant="subtitle2">編集モード</Typography>}
           />
-        )}
+          <Box m={3} />
+        </>
+      )}
 
-        {loginUser && !isMyList && (
+      {loginUser && !isMyList && (
+        <>
           <FormControlLabel
             control={
               <Switch
@@ -176,85 +212,72 @@ const Books = ({ bookListOwner, bookListOwnerBooks }) => {
               <Typography variant="subtitle2">更新通知を受け取る</Typography>
             }
           />
-        )}
-      </Box>
-
-      <Box m={3} />
-
-      {!isMyList && (
-        <Accordion>
-          <AccordionSummary
-            expandIcon={<ExpandMoreIcon />}
-            aria-controls="panel1a-content"
-            id="panel1a-header"
-          >
-            <Typography variant="subtitle2">
-              共通の本（{sharedBooks.length}）
-            </Typography>
-          </AccordionSummary>
-
-          {sharedBooks.map((book, index) => (
-            <AccordionDetails key={index}>
-              <Typography variant="subtitle2">
-                {book.author}『{book.title}』（{book.publisherName}）
-              </Typography>
-            </AccordionDetails>
-          ))}
-        </Accordion>
+          <Box m={3} />
+        </>
       )}
 
-      <Box m={3} />
+      {!isMyList && (
+        <>
+          <Accordion>
+            <AccordionSummary
+              expandIcon={<ExpandMoreIcon />}
+              aria-controls="panel1a-content"
+              id="panel1a-header"
+            >
+              <Typography variant="subtitle2">
+                共通の本（{sharedBooks.length}）
+              </Typography>
+            </AccordionSummary>
 
-      {bookListOwnerBooks.length !== 0 && (
-        <BookList
-          books={bookListOwnerBooks}
-          isMyList={isMyList}
-          onEditMode={onEditMode}
-        />
+            {sharedBooks.map((book, index) => (
+              <AccordionDetails key={index}>
+                <Typography variant="subtitle2">
+                  {book.author}『{book.title}』（{book.publisherName}）
+                </Typography>
+              </AccordionDetails>
+            ))}
+          </Accordion>
+          <Box m={3} />
+        </>
+      )}
+
+      {books && books.length !== 0 && (
+        <BookList books={books} isMyList={isMyList} onEditMode={onEditMode} />
       )}
     </>
   );
 };
 
-export const getServerSideProps = async ctx => {
-  const { username } = ctx.query;
+export const getStaticPaths = async () => {
+  const usernameList = await dbAdmin
+    .collection('users')
+    .get()
+    .then(snapshot => snapshot.docs.map(doc => doc.data().username));
 
-  const bookListOwner = await dbAdmin
+  return {
+    paths: usernameList.map(username => ({
+      params: {
+        username,
+      },
+    })),
+    fallback: true,
+  };
+};
+
+export const getStaticProps = async ({ params: { username } }) => {
+  const snapshot = await dbAdmin
     .collection('users')
     .where('username', '==', username)
-    .get()
-    .then(snapshot => {
-      let data;
-      snapshot.forEach(doc => {
-        data = doc.data();
-      });
-      return data;
-    });
+    .get();
 
-  if (!bookListOwner) {
-    return {
-      props: {
-        bookListOwner: null,
-      },
-    };
-  }
-
-  const bookListOwnerBooks = await dbAdmin
-    .collection('users')
-    .doc(bookListOwner.uid)
-    .collection('books')
-    .get()
-    .then(snapshot => {
-      let data = [];
-      snapshot.forEach(doc => data.push(doc.data()));
-      return data;
-    });
+  const bookListOwner =
+    snapshot.docs.length !== 0 ? snapshot.docs[0].data() : null;
 
   return {
     props: {
       bookListOwner,
-      bookListOwnerBooks,
     },
+    revalidate: 1,
   };
 };
 
