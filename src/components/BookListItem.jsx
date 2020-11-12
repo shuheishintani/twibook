@@ -19,21 +19,13 @@ const BookListItem = ({
   book,
   isMyList,
   onEditMode,
-  loginUserBooksIsbnList,
 }) => {
   const [exists, setExists] = useState(true);
-  const [isShared, setIsShared] = useState(false);
   const loginUser = useRecoilValue(loginUserState);
   const [loginUserBooks, setLoginUserBooks] = useRecoilState(
     loginUserBooksState
   );
   const classes = useStyles();
-
-  useEffect(() => {
-    if (loginUserBooksIsbnList) {
-      setIsShared(loginUserBooksIsbnList.includes(book.isbn));
-    }
-  }, [book, loginUserBooksIsbnList]);
 
   const { isbn, coverImageUrl } = book;
 
@@ -59,15 +51,9 @@ const BookListItem = ({
       <motion.div className="img-wrap" layout whileHover={{ scale: 1.1 }} >
         <Box display="flex" alignItems="flex-start">
           <Link href={`/books/${book.isbn}`}>
-            {!isMyList && isShared ? (
-              <Box boxShadow={7} border={3} borderColor="#1de9b6" borderRadius={3}>
-                <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
-              </Box>
-            ) : (
-                <Box boxShadow={7}>
-                  <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
-                </Box>
-              )}
+            <Box boxShadow={7}>
+              <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
+            </Box>
           </Link>
 
           {isMyList && onEditMode && (

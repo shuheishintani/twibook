@@ -16,7 +16,7 @@ import {
 import { Add } from '@material-ui/icons';
 import Snackbar from '@material-ui/core/Snackbar';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     alignItems: 'flex-start',
@@ -29,6 +29,9 @@ const useStyles = makeStyles(() => ({
   content: {
     flex: '1 0 auto',
     width: '230px',
+    [theme.breakpoints.down('sm')]: {
+      width: '80vh',
+    },
   },
   controls: {
     display: 'flex',
