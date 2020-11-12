@@ -12,6 +12,7 @@
     "@material-ui/core": "^4.11.0",
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
+    "@nestjs/config": "^0.5.0",
     "firebase": "^8.0.0",
     "firebase-admin": "^9.3.0",
     "framer-motion": "^2.9.4",

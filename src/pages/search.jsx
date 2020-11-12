@@ -96,6 +96,7 @@ const Search = () => {
               value={title}
               onChange={handleTitleInput}
               className={classes.root}
+              inputProps={{ readOnly: true }}
             />
           </Box>
           <Box m={1}>
@@ -107,6 +108,7 @@ const Search = () => {
               value={author}
               onChange={handleAuthorInput}
               className={classes.root}
+              inputProps={{ readOnly: true }}
             />
           </Box>
           <Box m={1}>
