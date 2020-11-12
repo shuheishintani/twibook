@@ -3,7 +3,7 @@ import { Grid } from '@material-ui/core';
 
 const BookList = ({ books, isMyList, onEditMode }) => {
   return (
-    <Grid container spacing={5}>
+    <Grid container spacing={window.innerWidth > 600 ? 5 : 2}>
       {books.map((book, index) => (
         <BookListItem
           book={book}

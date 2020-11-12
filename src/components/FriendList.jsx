@@ -3,7 +3,7 @@ import FriendListItem from '@/components/FriendListItem';
 
 const Friends = ({ friends }) => {
   return (
-    <Grid container spacing={5}>
+    <Grid container>
       {friends.map(friend => (
         <FriendListItem key={friend.uid} friendId={friend.uid} />
       ))}
