@@ -30,7 +30,7 @@ const useStyles = makeStyles(theme => ({
     flex: '1 0 auto',
     width: '230px',
     [theme.breakpoints.down('sm')]: {
-      width: '80vh',
+      width: '80vw',
     },
   },
   controls: {
