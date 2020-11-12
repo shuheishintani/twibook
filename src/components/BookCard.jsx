@@ -28,7 +28,7 @@ const useStyles = makeStyles(() => ({
   },
   content: {
     flex: '1 0 auto',
-    width: '260px',
+    width: '230px',
   },
   controls: {
     display: 'flex',
