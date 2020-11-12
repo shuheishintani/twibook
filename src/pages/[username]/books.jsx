@@ -178,7 +178,6 @@ const Books = ({ bookListOwner }) => {
               <PeopleIcon />
             </IconButton>
             <Box m={1} />
-
             <IconButton
               size="small"
               onClick={() => {

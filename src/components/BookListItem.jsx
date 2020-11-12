@@ -52,12 +52,15 @@ const BookListItem = ({
         <Box display="flex" alignItems="flex-start">
           <Link href={`/books/${book.isbn}`}>
             <Box boxShadow={7}>
-              <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
+              {window.innerWidth > 600 ? (
+                <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
+              ) : (
+                  <img src={coverImageUrl} alt="cover_img" width="53" height="74" />
+                )}
             </Box>
           </Link>
-
           {isMyList && onEditMode && (
-            <IconButton onClick={handleDelete}>
+            <IconButton onClick={handleDelete} size="small">
               <ClearIcon />
             </IconButton>
           )}
