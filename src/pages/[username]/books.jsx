@@ -24,6 +24,7 @@ import {
 import {
   ExpandMore as ExpandMoreIcon,
   Twitter as TwitterIcon,
+  People as PeopleIcon,
 } from '@material-ui/icons';
 
 const fetchBooksByUid = async uid => {
@@ -167,10 +168,19 @@ const Books = ({ bookListOwner }) => {
             <Typography variant="subtitle1">
               {bookListOwner.displayName}さんの本棚
             </Typography>
-            <Box m={1} />
+            <Box m={2} />
             <IconButton
               size="small"
-              style={{ color: '#1DA1F2' }}
+              onClick={() => {
+                window.open(`https://twitter.com/${bookListOwner.username}`);
+              }}
+            >
+              <PeopleIcon />
+            </IconButton>
+            <Box m={1} />
+
+            <IconButton
+              size="small"
               onClick={() => {
                 window.open(`https://twitter.com/${bookListOwner.username}`);
               }}
