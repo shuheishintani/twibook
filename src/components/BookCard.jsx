@@ -149,10 +149,9 @@ const BookCard = ({ book }) => {
         open={snackbarOpen}
         autoHideDuration={1000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <MuiAlert severity="info">本棚に追加しました！</MuiAlert>
-      </Snackbar>
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        message="本棚に追加しました！"
+      />
     </>
   );
 };

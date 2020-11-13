@@ -192,6 +192,14 @@ const Books = ({ bookListOwner }) => {
 
       <Box m={3} />
 
+      <a
+        href={`http://twitter.com/share?url=twibook.vercel.app/${bookListOwner.username}/books&text=テスト&via=${bookListOwner.username}&related=${bookListOwner.username}&hashtags=twibook`}
+        target="_blank"
+        rel="noreferrer"
+      >
+        ツイート
+      </a>
+
       {isMyList && (
         <>
           <FormControlLabel

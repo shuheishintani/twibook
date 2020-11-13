@@ -274,10 +274,9 @@ export default function Layout({ children }) {
         open={snackbarOpen}
         autoHideDuration={2000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <MuiAlert severity="info">アカウントを削除しました</MuiAlert>
-      </Snackbar>
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        message='アカウントを削除しました'
+      />
     </div>
   );
 }

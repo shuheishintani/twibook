@@ -67,7 +67,6 @@ const Profile = () => {
       await auth.currentUser.delete();
       setSnackbarOpen(true)
       setLoading(false);
-      router.push('/')
     }
   };
 

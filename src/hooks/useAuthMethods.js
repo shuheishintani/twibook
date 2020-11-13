@@ -59,7 +59,6 @@ export default function useLoginMethod() {
         });
       })
       .then(newEntry => {
-        router.push('/');
         newEntry && router.reload();
       })
       .catch(e => {

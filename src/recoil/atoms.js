@@ -32,12 +32,12 @@ export const searchedBooksState = atom({
 
 export const titleKeywordState = atom({
   key: 'titleKeyword',
-  default: null,
+  default: '',
 });
 
 export const authorKeywordState = atom({
   key: 'authorKeyword',
-  default: null,
+  default: '',
 });
 
 export const snackbarOpenState = atom({
