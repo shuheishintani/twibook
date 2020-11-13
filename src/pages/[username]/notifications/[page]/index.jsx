@@ -1,9 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { dbAdmin } from '@/firebase/admin';
 import { useRecoilValue } from 'recoil';
 import { loginUserNotificationsState, loginUserState } from '@/recoil/atoms';
-import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import moment from 'moment-timezone';
 import { Divider, Typography, Box, Avatar } from '@material-ui/core';
@@ -92,26 +90,26 @@ const Notification = () => {
   );
 };
 
-export const getServerSideProps = async ctx => {
-  const { username } = ctx.query;
+// export const getServerSideProps = async ctx => {
+//   const { username } = ctx.query;
 
-  const loginUser = await dbAdmin
-    .collection('users')
-    .where('username', '==', username)
-    .get()
-    .then(snapshot => {
-      let data;
-      snapshot.forEach(doc => {
-        data = doc.data();
-      });
-      return data;
-    });
+//   const loginUser = await dbAdmin
+//     .collection('users')
+//     .where('username', '==', username)
+//     .get()
+//     .then(snapshot => {
+//       let data;
+//       snapshot.forEach(doc => {
+//         data = doc.data();
+//       });
+//       return data;
+//     });
 
-  return {
-    props: {
-      loginUser,
-    },
-  };
-};
+//   return {
+//     props: {
+//       hoge: 'hoge'
+//     },
+//   };
+// };
 
 export default Notification;
