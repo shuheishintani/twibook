@@ -8,6 +8,7 @@ import { Grid, Box, IconButton } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import ClearIcon from '@material-ui/icons/Clear';
 import { motion } from 'framer-motion';
+import MediaQuery from "react-responsive";
 
 const useStyles = makeStyles(() => ({
   root: {
@@ -52,11 +53,12 @@ const BookListItem = ({
         <Box display="flex" alignItems="flex-start">
           <Link href={`/books/${book.isbn}`}>
             <Box boxShadow={7}>
-              {window.innerWidth > 600 ? (
+              <MediaQuery query="(max-width: 600px)">
+                <img src={coverImageUrl} alt="cover_img" width="70" height="100" />
+              </MediaQuery>
+              <MediaQuery query="(min-width: 600px)">
                 <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
-              ) : (
-                  <img src={coverImageUrl} alt="cover_img" width="53" height="74" />
-                )}
+              </MediaQuery>
             </Box>
           </Link>
           {isMyList && onEditMode && (

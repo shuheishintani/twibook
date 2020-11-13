@@ -1,23 +1,35 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
-import { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
 import { useRecoilValue } from 'recoil';
-import { loginUserState, loginUserNotificationsState } from '@/recoil/atoms';
+import { loginUserNotificationsState, loginUserState } from '@/recoil/atoms';
+import useSWR from 'swr';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import moment from 'moment-timezone';
-import { Divider, Typography, Box } from '@material-ui/core';
-import { Pagination, PaginationItem } from '@material-ui/lab';
+import { Divider, Typography, Box, Avatar } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 
-const Notification = ({ notifications }) => {
-  const loginUser = useRecoilValue(loginUserState);
+const Notification = () => {
   const router = useRouter();
   const { page } = router.query;
   const stringPage = parseInt(page);
+  const loginUserNotifications = useRecoilValue(loginUserNotificationsState);
+  const loginUser = useRecoilValue(loginUserState);
+  const [notifications, setNotifications] = useState([]);
 
-  const handlePagination = (e, page) => {
-    router.push(`/${loginUser.username}/notifications/${page}`);
-  };
+  useEffect(() => {
+    if (loginUserNotifications) {
+      const formattedNotifications = loginUserNotifications.map(
+        notification => ({
+          ...notification,
+          createdAt: moment(notification.createdAt)
+            .tz('Asia/Tokyo')
+            .format('YYYY-MM-DD HH:mm:ss'),
+        })
+      );
+      setNotifications(formattedNotifications.slice(page * 10, page * 10 + 10));
+    }
+  }, [loginUserNotifications, page]);
 
   useEffect(() => {
     if (loginUser) {
@@ -30,12 +42,9 @@ const Notification = ({ notifications }) => {
     }
   }, [loginUser]);
 
-  const formattedNotifications = notifications.map(notification => ({
-    ...notification,
-    createdAt: moment(notification.createdAt)
-      .tz('Asia/Tokyo')
-      .format('YYYY-MM-DD HH:mm:ss'),
-  }));
+  const handlePagination = (e, page) => {
+    router.push(`/${loginUser.username}/notifications/${page}`);
+  };
 
   if (!loginUser) {
     return <></>;
@@ -45,30 +54,46 @@ const Notification = ({ notifications }) => {
     <>
       <Typography variant="subtitle1">新着通知</Typography>
       <Box m={3} />
-      <Divider />
-      {formattedNotifications &&
-        formattedNotifications.map((notification, index) => {
+      {notifications &&
+        notifications.map((notification, index) => {
           return (
             <div key={index}>
-              <p>
-                {notification.message}{' '}
-                {new Date(notification.createdAt) > Date.now() - 86400000 && (
-                  <span style={{ color: '#f50057' }}>new!</span>
-                )}
-              </p>
-              <p>{notification.createdAt}</p>
+              <Box display="flex" alignItems="center">
+                <Avatar src={notification.createdBy.profileImageUrl} />
+                <Box m={1} />
+                <Box>
+                  <p>
+                    {notification.message}{' '}
+                    {new Date(notification.createdAt) >
+                      Date.now() - 86400000 && (
+                        <span style={{ color: '#f50057' }}>new!</span>
+                      )}
+                  </p>
+                  <Typography variant="body2" color="textSecondary">
+                    {notification.createdAt}
+                  </Typography>
+                </Box>
+              </Box>
+
+              <Box m={1} />
               <Divider />
             </div>
           );
         })}
       <Box m={3} />
-      <Pagination count={5} page={stringPage} onChange={handlePagination} />
+      {loginUserNotifications && (
+        <Pagination
+          count={Math.floor(loginUserNotifications.length / 10)}
+          page={stringPage}
+          onChange={handlePagination}
+        />
+      )}
     </>
   );
 };
 
 export const getServerSideProps = async ctx => {
-  const { username, page } = ctx.query;
+  const { username } = ctx.query;
 
   const loginUser = await dbAdmin
     .collection('users')
@@ -82,26 +107,9 @@ export const getServerSideProps = async ctx => {
       return data;
     });
 
-  const notifications = await dbAdmin
-    .doc(`/users/${loginUser.uid}`)
-    .collection('notifications')
-    .orderBy('createdAt', 'desc')
-    .limit(10)
-    .offset((page - 1) * 10)
-    .get()
-    .then(snapshot => {
-      let notifications = [];
-      snapshot.forEach(doc => {
-        notifications.push(doc.data());
-      });
-      return notifications;
-    });
-
-  const parsetNotifications = JSON.parse(JSON.stringify(notifications));
-
   return {
     props: {
-      notifications: parsetNotifications,
+      loginUser,
     },
   };
 };

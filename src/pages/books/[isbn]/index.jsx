@@ -69,9 +69,6 @@ const BookDetail = ({ readers }) => {
     }
   }, [loginUser, loginUserFriends, readers]);
 
-  console.log({ friendReaders });
-  console.log({ unknownReaders });
-
   if (!data) {
     return <p>Loading...</p>;
   }
@@ -101,13 +98,16 @@ const BookDetail = ({ readers }) => {
               </Typography>
               <Box m={2} />
               <Typography variant="subtitle2"></Typography>
-              <p>¥{book.price}</p>
-              <p>{book.salesDate}</p>
+              <Typography variant="body2">¥{book.price}</Typography>
+              <Box m={1} />
+              <Typography variant="body2">
+                {book.salesDate.replace('頃', '')}発売
+              </Typography>
             </Box>
           </Box>
 
           <Box m={3} />
-          <Typography variant="subtitle2">{book.description}</Typography>
+          <Typography variant="body2">{book.description}</Typography>
           <Box m={3} />
 
           <Button

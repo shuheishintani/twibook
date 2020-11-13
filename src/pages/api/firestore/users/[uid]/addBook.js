@@ -31,7 +31,9 @@ export default async (req, res) => {
         id: subscriberNotificationRef.id,
         type: 'addBook',
         message: `${actionUser.displayName}さんが${book.author}『${book.title}』(${book.publisherName})を追加しました`,
+        book,
         unread: true,
+        createdBy: actionUser,
         createdAt: Date.now(),
       });
     });
