@@ -25,7 +25,7 @@ const Notification = () => {
             .format('YYYY-MM-DD HH:mm:ss'),
         })
       );
-      setNotifications(formattedNotifications.slice(page * 10, page * 10 + 10));
+      setNotifications(formattedNotifications.slice(page * 20, page * 20 + 20));
     }
   }, [loginUserNotifications, page]);
 
@@ -41,7 +41,13 @@ const Notification = () => {
   }, [loginUser]);
 
   const handlePagination = (e, page) => {
-    router.push(`/${loginUser.username}/notifications/${page}`);
+    router.push(`/${loginUser.username}/notifications/${page}`).then(() => {
+      window.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth'
+      });
+    })
   };
 
   if (!loginUser) {
@@ -79,9 +85,9 @@ const Notification = () => {
           );
         })}
       <Box m={3} />
-      {loginUserNotifications && (
+      {loginUserNotifications.length !== 0 && (
         <Pagination
-          count={Math.floor(loginUserNotifications.length / 10)}
+          count={Math.floor(loginUserNotifications.length / 20)}
           page={stringPage}
           onChange={handlePagination}
         />
@@ -89,27 +95,5 @@ const Notification = () => {
     </>
   );
 };
-
-// export const getServerSideProps = async ctx => {
-//   const { username } = ctx.query;
-
-//   const loginUser = await dbAdmin
-//     .collection('users')
-//     .where('username', '==', username)
-//     .get()
-//     .then(snapshot => {
-//       let data;
-//       snapshot.forEach(doc => {
-//         data = doc.data();
-//       });
-//       return data;
-//     });
-
-//   return {
-//     props: {
-//       hoge: 'hoge'
-//     },
-//   };
-// };
 
 export default Notification;
