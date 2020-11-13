@@ -1,7 +1,13 @@
 import { useState, useEffect } from 'react';
 import { auth } from '@/firebase/client';
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
+import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import {
+  loginUserState,
+  loginUserBooksState,
+  loginUserFriendsState,
+  loginUserSubscribeState,
+  loginUserNotificationsState,
+} from '@/recoil/atoms';
 import { useRouter } from 'next/router';
 import {
   Button,
@@ -31,7 +37,15 @@ const useStyles = makeStyles(theme => ({
 const Profile = () => {
   const router = useRouter();
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
-  const loginUserBooks = useRecoilValue(loginUserBooksState);
+  const [loginUserBooks, setLoginUserBooks] = useRecoilState(
+    loginUserBooksState
+  );
+  const setLoginUserFriends = useSetRecoilState(loginUserFriendsState);
+  const setLoginUserSubscribe = useSetRecoilState(loginUserSubscribeState);
+  const setLoginUserNotifications = useSetRecoilState(
+    loginUserNotificationsState
+  );
+
   const [open, setOpen] = useState(false);
 
   const classes = useStyles();
@@ -44,13 +58,14 @@ const Profile = () => {
 
   const deleteUser = async () => {
     if (loginUser && loginUser.uid === loginUser.uid) {
-      await fetch(`/api/firestore/users/${loginUser.uid}/deleteUser`).then(
-        () => {
-          router.push('/');
-        }
-      );
-      await auth.currentUser.delete();
+      await fetch(`/api/firestore/users/${loginUser.uid}/deleteUser`);
       setLoginUser(null);
+      setLoginUserBooks([]);
+      setLoginUserFriends([]);
+      setLoginUserSubscribe([]);
+      setLoginUserNotifications([]);
+      await auth.currentUser.delete();
+      await router.push('/');
     }
   };
 
