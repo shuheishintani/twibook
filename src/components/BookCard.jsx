@@ -15,6 +15,7 @@ import {
 } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -148,9 +149,10 @@ const BookCard = ({ book }) => {
         open={snackbarOpen}
         autoHideDuration={1000}
         onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        message="本棚に追加しました！"
-      />
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <MuiAlert severity="info">本棚に追加しました！</MuiAlert>
+      </Snackbar>
     </>
   );
 };

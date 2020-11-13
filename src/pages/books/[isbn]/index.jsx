@@ -50,7 +50,7 @@ const BookDetail = ({ readers }) => {
   }, [data]);
 
   useEffect(() => {
-    if (loginUserFriends) {
+    if (loginUser && loginUserFriends) {
       const loginUserFriendIds = loginUserFriends.map(friend => friend.uid);
       setFriendReaders(
         readers.filter(

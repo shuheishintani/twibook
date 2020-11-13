@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
 import { useRecoilState } from 'recoil';
-import { loginUserNotificationsState } from '@/recoil/atoms';
+import { loginUserNotificationsState, snackbarOpenState } from '@/recoil/atoms';
 import useAuthObserver from '@/hooks/useAuthObserver';
 import useAuthMethods from '@/hooks/useAuthMethods';
 import Link from 'next/link';
@@ -22,6 +22,7 @@ import {
   ListItemIcon,
   ListItemText,
   Badge,
+  Snackbar,
 } from '@material-ui/core';
 
 import {
@@ -35,6 +36,8 @@ import {
   ImportContacts as ImportContactsIcon,
   Notifications as NotificationsIcon,
 } from '@material-ui/icons';
+
+import MuiAlert from '@material-ui/lab/Alert';
 
 const drawerWidth = 240;
 
@@ -107,6 +110,7 @@ export default function Layout({ children }) {
   const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(
     loginUserNotificationsState
   );
+  const [snackbarOpen, setSnackbarOpen] = useRecoilState(snackbarOpenState)
 
   useEffect(() => {
     if (loginUser) {
@@ -266,6 +270,14 @@ export default function Layout({ children }) {
         <div className={classes.drawerHeader} />
         {children}
       </main>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      >
+        <MuiAlert severity="info">アカウントを削除しました</MuiAlert>
+      </Snackbar>
     </div>
   );
 }

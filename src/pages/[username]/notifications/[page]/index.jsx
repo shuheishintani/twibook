@@ -25,7 +25,7 @@ const Notification = () => {
             .format('YYYY-MM-DD HH:mm:ss'),
         })
       );
-      setNotifications(formattedNotifications.slice(page * 20, page * 20 + 20));
+      setNotifications(formattedNotifications.slice((page - 1) * 20, (page - 1) * 20 + 20));
     }
   }, [loginUserNotifications, page]);
 
@@ -45,7 +45,6 @@ const Notification = () => {
       window.scroll({
         top: 0,
         left: 0,
-        behavior: 'smooth'
       });
     })
   };
@@ -54,9 +53,19 @@ const Notification = () => {
     return <></>;
   }
 
+  console.log(loginUserNotifications)
+
+  console.log(notifications)
+
   return (
     <>
       <Typography variant="subtitle1">新着通知</Typography>
+      <Box m={3} />
+      {loginUserNotifications.length > (page - 1) * 20 + 20 ? (
+        <Typography variant="subtitle2">{(page - 1) * 20 + 1}件目〜{(page - 1) * 20 + 20}件目を表示</Typography>
+      ) : (
+          <Typography variant="subtitle2">{(page - 1) * 20 + 1}件目〜{loginUserNotifications.length}件目を表示</Typography>
+        )}
       <Box m={3} />
       {notifications &&
         notifications.map((notification, index) => {
@@ -87,7 +96,7 @@ const Notification = () => {
       <Box m={3} />
       {loginUserNotifications.length !== 0 && (
         <Pagination
-          count={Math.floor(loginUserNotifications.length / 20)}
+          count={Math.floor(loginUserNotifications.length / 20) + 1}
           page={stringPage}
           onChange={handlePagination}
         />

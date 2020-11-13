@@ -1,12 +1,14 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { auth } from '@/firebase/client';
-import { useRecoilState, useSetRecoilState, useRecoilValue } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import {
   loginUserState,
   loginUserBooksState,
   loginUserFriendsState,
   loginUserSubscribeState,
   loginUserNotificationsState,
+  snackbarOpenState
 } from '@/recoil/atoms';
 import { useRouter } from 'next/router';
 import {
@@ -17,6 +19,7 @@ import {
   Modal,
   Backdrop,
   Fade,
+  Snackbar
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -45,19 +48,16 @@ const Profile = () => {
   const setLoginUserNotifications = useSetRecoilState(
     loginUserNotificationsState
   );
+  const [snackbarOpen, setSnackbarOpen] = useRecoilState(snackbarOpenState);
 
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const classes = useStyles();
 
-  useEffect(() => {
-    if (!loginUser) {
-      router.push('/');
-    }
-  }, [loginUser, router]);
-
   const deleteUser = async () => {
     if (loginUser && loginUser.uid === loginUser.uid) {
+      setLoading(true);
       await fetch(`/api/firestore/users/${loginUser.uid}/deleteUser`);
       setLoginUser(null);
       setLoginUserBooks([]);
@@ -65,7 +65,9 @@ const Profile = () => {
       setLoginUserSubscribe([]);
       setLoginUserNotifications([]);
       await auth.currentUser.delete();
-      await router.push('/');
+      setSnackbarOpen(true)
+      setLoading(false);
+      router.push('/')
     }
   };
 
@@ -78,7 +80,16 @@ const Profile = () => {
   };
 
   if (!loginUser) {
-    return <p>ユーザーが存在しません</p>;
+    return <>
+      <p>ユーザーが存在しません</p>
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={1000}
+        onClose={() => setSnackbarOpen(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
+        message="アカウントを削除しました"
+      />
+    </>
   }
 
   return (
@@ -114,20 +125,27 @@ const Profile = () => {
         }}
       >
         <Fade in={open}>
-          <div className={classes.paper}>
-            <h3 id="transition-modal-title">本当に削除しますか？</h3>
-            <Box display="flex" justifyContent="center">
-              <Button variant="outlined" onClick={deleteUser}>
-                はい
-              </Button>
-              <Box m={1} />
-              <Button variant="outlined" onClick={handleClose}>
-                いいえ
-              </Button>
-            </Box>
-          </div>
+          {loading ? (
+            <div className={classes.paper}>
+              <p>Loading...</p>
+            </div>
+          ) : (
+              <div className={classes.paper}>
+                <h3 id="transition-modal-title">本当に削除しますか？</h3>
+                <Box display="flex" justifyContent="center">
+                  <Button variant="outlined" onClick={deleteUser}>
+                    はい
+                </Button>
+                  <Box m={1} />
+                  <Button variant="outlined" onClick={handleClose}>
+                    いいえ
+                </Button>
+                </Box>
+              </div>
+            )}
         </Fade>
       </Modal>
+
     </>
   );
 };

@@ -29,3 +29,18 @@ export const searchedBooksState = atom({
   key: 'searchedBooks',
   default: [],
 });
+
+export const titleKeywordState = atom({
+  key: 'titleKeyword',
+  default: null,
+});
+
+export const authorKeywordState = atom({
+  key: 'authorKeyword',
+  default: null,
+});
+
+export const snackbarOpenState = atom({
+  key: 'snackbarOpen',
+  defualt: false,
+});
