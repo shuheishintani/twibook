@@ -9,6 +9,7 @@ import {
 } from '@/recoil/atoms';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import BookList from '@/components/BookList';
 import {
   FormControlLabel,
@@ -20,12 +21,20 @@ import {
   AccordionSummary,
   AccordionDetails,
   IconButton,
+  Button,
 } from '@material-ui/core';
 import {
   ExpandMore as ExpandMoreIcon,
   Twitter as TwitterIcon,
   People as PeopleIcon,
 } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(() => ({
+  shareBtn: {
+    textTransform: 'none',
+  },
+}));
 
 const fetchBooksByUid = async uid => {
   const snapshot = await db
@@ -56,6 +65,7 @@ const Books = ({ bookListOwner }) => {
   const { data, error } = useSWR(`/${username}/books`, () =>
     fetchBooksByUid(bookListOwner.uid)
   );
+  const classes = useStyles();
 
   useEffect(() => {
     data && setBooks(data.books);
@@ -169,14 +179,12 @@ const Books = ({ bookListOwner }) => {
               {bookListOwner.displayName}さんの本棚
             </Typography>
             <Box m={2} />
-            <IconButton
-              size="small"
-              onClick={() => {
-                window.open(`https://twitter.com/${bookListOwner.username}`);
-              }}
-            >
-              <PeopleIcon />
-            </IconButton>
+            <Link href={`/${bookListOwner.username}/friends`}>
+              <IconButton size="small">
+                <PeopleIcon />
+              </IconButton>
+            </Link>
+
             <Box m={1} />
             <IconButton
               size="small"
@@ -192,16 +200,24 @@ const Books = ({ bookListOwner }) => {
 
       <Box m={3} />
 
-      <a
-        href={`http://twitter.com/share?url=twibook.vercel.app/${bookListOwner.username}/books&text=${bookListOwner.username}の本棚&hashtags=twibook`}
-        target="_blank"
-        rel="noreferrer"
-      >
-        ツイート
-      </a>
+      <Box m={3} />
 
       {isMyList && (
         <>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              window.open(
+                `http://twitter.com/share?url=twibook.vercel.app/${bookListOwner.username}/books&text=${bookListOwner.displayName}さんの本棚`
+              );
+            }}
+            className={classes.shareBtn}
+          >
+            <TwitterIcon fontSize="small" style={{ color: '#1DA1F2' }} />
+            <Box m={1} />
+            Twitterで本棚を公開する
+          </Button>
+          <Box m={3} />
           <FormControlLabel
             control={
               <Switch

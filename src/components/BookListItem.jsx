@@ -54,7 +54,7 @@ const BookListItem = ({
           <Link href={`/books/${book.isbn}`}>
             <Box boxShadow={7}>
               <MediaQuery query="(max-width: 600px)">
-                <img src={coverImageUrl} alt="cover_img" width="70" height="100" />
+                <img src={coverImageUrl} alt="cover_img" width="70" height="98" />
               </MediaQuery>
               <MediaQuery query="(min-width: 600px)">
                 <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
