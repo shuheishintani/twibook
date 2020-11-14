@@ -183,14 +183,14 @@ export default function MobileLayout({ children }) {
               </ListItemIcon>
               <ListItemText primary='ログアウト' />
             </ListItem>
-            <Link href='/contact'>
+            {/* <Link href='/contact'>
               <ListItem button >
                 <ListItemIcon>
                   <MailOutlineOutlinedIcon />
                 </ListItemIcon>
                 <ListItemText primary="お問い合わせ" />
               </ListItem>
-            </Link>
+            </Link> */}
             <Link href="/exit">
               <ListItem button >
                 <ListItemIcon>
@@ -209,14 +209,14 @@ export default function MobileLayout({ children }) {
                 </ListItemIcon>
                 <ListItemText primary='ログイン' />
               </ListItem>
-              <Link href='/contact'>
+              {/* <Link href='/contact'>
                 <ListItem button >
                   <ListItemIcon>
                     <MailOutlineOutlinedIcon />
                   </ListItemIcon>
                   <ListItemText primary="お問い合わせ" />
                 </ListItem>
-              </Link>
+              </Link> */}
             </>
           )}
       </List>
