@@ -111,11 +111,15 @@ export const getStaticProps = async () => {
     return new Promise(resolve => resolve(user));
   });
 
-  const populatedUsers = await Promise.all(promises);
+  const populatedNewUsers = await Promise.all(promises);
+
+  const filterdNewUsers = populatedNewUsers.filter(
+    user => user.books.length > 0
+  );
 
   return {
     props: {
-      newUsers: populatedUsers,
+      newUsers: filterdNewUsers,
     },
     revalidate: 1,
   };
