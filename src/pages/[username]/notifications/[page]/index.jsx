@@ -3,9 +3,20 @@ import { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { loginUserNotificationsState, loginUserState } from '@/recoil/atoms';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
 import moment from 'moment-timezone';
 import { Divider, Typography, Box, Avatar } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
+import { makeStyles } from '@material-ui/core/styles';
+
+const useStyles = makeStyles(theme => ({
+  hoverUnderline: {
+    '&:hover': {
+      textDecoration: 'underline',
+      cursor: 'pointer',
+    },
+  },
+}));
 
 const Notification = () => {
   const router = useRouter();
@@ -14,6 +25,7 @@ const Notification = () => {
   const loginUserNotifications = useRecoilValue(loginUserNotificationsState);
   const loginUser = useRecoilValue(loginUserState);
   const [notifications, setNotifications] = useState([]);
+  const classes = useStyles();
 
   useEffect(() => {
     if (loginUserNotifications) {
@@ -53,9 +65,7 @@ const Notification = () => {
     return <></>;
   }
 
-  console.log(loginUserNotifications)
-
-  if (notifications.length === 0) {
+  if (loginUser && notifications.length === 0) {
     return <Typography variant="subtitle1">新着通知はありません</Typography>
   }
 
@@ -77,13 +87,30 @@ const Notification = () => {
                 <Avatar src={notification.createdBy.profileImageUrl} />
                 <Box m={1} />
                 <Box>
-                  <p>
-                    {notification.message}{' '}
-                    {new Date(notification.createdAt) >
-                      Date.now() - 86400000 && (
-                        <span style={{ color: '#f50057' }}>new!</span>
-                      )}
-                  </p>
+                  {notification.type === 'addBook' ? (
+                    <p>
+                      <Link href={`/books/${notification.book.isbn}`}>
+                        <span className={classes.hoverUnderline}>
+                          {notification.message}{' '}
+                        </span>
+                      </Link>
+
+                      {new Date(notification.createdAt) >
+                        Date.now() - 86400000 && (
+                          <span style={{ color: '#f50057' }}>new!</span>
+                        )}
+                    </p>
+                  ) : (
+                      <p>
+                        {notification.message}{' '}
+                        {new Date(notification.createdAt) >
+                          Date.now() - 86400000 && (
+                            <span style={{ color: '#f50057' }}>new!</span>
+                          )}
+                      </p>
+                    )}
+
+
                   <Typography variant="body2" color="textSecondary">
                     {notification.createdAt}
                   </Typography>
