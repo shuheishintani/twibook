@@ -254,7 +254,7 @@ const Books = ({ bookListOwner }) => {
         </>
       )}
 
-      {!isMyList && (
+      {loginUser && !isMyList && (
         <>
           <Accordion>
             <AccordionSummary
