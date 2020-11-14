@@ -4,7 +4,7 @@ import { dbAdmin } from '@/firebase/admin';
 import useSWR from 'swr';
 import { useRouter } from 'next/router';
 import FriendList from '@/components/FriendList';
-import { Box, Avatar, Typography } from '@material-ui/core';
+import { Box, Avatar, Typography, CircularProgress } from '@material-ui/core';
 
 const fetchFriendsByUid = async uid => {
   const snapshot = await db
@@ -36,7 +36,7 @@ const Friends = ({ friendListOwner }) => {
   }
 
   if (!data) {
-    return <p>Loading...</p>;
+    return <CircularProgress />;
   }
 
   if (error) {

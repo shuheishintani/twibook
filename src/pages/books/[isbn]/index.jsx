@@ -6,7 +6,14 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { fetchBookByIsbn } from '@/lib/rakutenBookApi';
 import useSWR from 'swr';
-import { Avatar, Typography, Box, Divider, Button } from '@material-ui/core';
+import {
+  Avatar,
+  Typography,
+  Box,
+  Divider,
+  Button,
+  CircularProgress,
+} from '@material-ui/core';
 import AvatarGroup from '@material-ui/lab/AvatarGroup';
 import { motion } from 'framer-motion';
 import { makeStyles } from '@material-ui/core/styles';
@@ -70,7 +77,7 @@ const BookDetail = ({ readers }) => {
   }, [loginUser, loginUserFriends, readers]);
 
   if (!data) {
-    return <p>Loading...</p>;
+    return <CircularProgress />;
   }
 
   if (error) {

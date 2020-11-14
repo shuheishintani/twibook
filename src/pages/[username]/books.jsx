@@ -22,6 +22,7 @@ import {
   AccordionDetails,
   IconButton,
   Button,
+  CircularProgress,
 } from '@material-ui/core';
 import {
   ExpandMore as ExpandMoreIcon,
@@ -161,7 +162,7 @@ const Books = ({ bookListOwner }) => {
   }
 
   if (!data) {
-    return <p>Loading...</p>;
+    return <CircularProgress />;
   }
 
   if (error) {

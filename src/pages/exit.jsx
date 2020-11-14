@@ -10,7 +10,7 @@ import {
   loginUserNotificationsState,
 } from '@/recoil/atoms';
 import Link from 'next/link';
-import { Snackbar, Button, Modal, Fade, Backdrop, Box } from '@material-ui/core';
+import { Snackbar, Button, Modal, Fade, Backdrop, Box, CircularProgress } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles(theme => ({
@@ -108,7 +108,7 @@ const Exit = () => {
         <Fade in={modalOpen}>
           {loading ? (
             <div className={classes.paper}>
-              <p>Loading...</p>
+              <CircularProgress />
             </div>
           ) : (
               <div className={classes.paper}>
