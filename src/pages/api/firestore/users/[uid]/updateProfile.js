@@ -1,4 +1,4 @@
-import firebaseAdmin, { dbAdmin } from '@/firebase/admin';
+import { dbAdmin } from '@/firebase/admin';
 import twitter from 'twitter';
 
 export default async (req, res) => {
@@ -10,14 +10,6 @@ export default async (req, res) => {
     access_token_secret: secret,
   });
 
-  const followersData = await client.get('/followers/list', {
-    id: loginUser.uid,
-  });
-
-  const followers = followersData.users.map(user => ({
-    uid: user.id_str,
-  }));
-
   const followeesData = await client.get('/friends/list', {
     id: loginUser.uid,
   });
@@ -26,14 +18,12 @@ export default async (req, res) => {
     uid: user.id_str,
   }));
 
-  const friendsOnTwitter = [...followers, ...followees];
-
   const allUserIds = await dbAdmin
     .collection('users')
     .get()
     .then(snapshot => snapshot.docs.map(doc => doc.data().uid));
 
-  const friends = friendsOnTwitter.filter(friendOnTwitter => {
+  const friends = followees.filter(friendOnTwitter => {
     return allUserIds.some(userId => userId === friendOnTwitter.uid);
   });
 
@@ -60,6 +50,8 @@ export default async (req, res) => {
       .collection('notifications')
       .doc();
 
+    const friendFriendsRef = usersRef.dov(friend.uid).collection('friends').doc;
+
     if (newEntry) {
       batch.set(friendNotificationRef, {
         id: friendNotificationRef.id,
@@ -68,6 +60,9 @@ export default async (req, res) => {
         unread: true,
         createdBy: loginUser,
         createdAt: Date.now(),
+      });
+      batch.set(friendFriendsRef, {
+        uid: loginUser.uid,
       });
     }
   });
