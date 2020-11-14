@@ -210,7 +210,7 @@ const Books = ({ bookListOwner }) => {
             variant="outlined"
             onClick={() => {
               window.open(
-                `http://twitter.com/share?url=twibook.vercel.app/${bookListOwner.username}/books&text=${bookListOwner.displayName}さんの本棚`
+                `http://twitter.com/share?url=twibook.vercel.app/${bookListOwner.username}/books&text=${bookListOwner.username}の本棚`
               );
             }}
             className={classes.shareBtn}
