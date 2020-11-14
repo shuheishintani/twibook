@@ -1,11 +1,8 @@
 import { dbAdmin } from '@/firebase/admin';
-import useSWR from 'swr';
-
-import React from 'react';
+import Link from 'next/link';
 import { makeStyles } from '@material-ui/core/styles';
 import {
   Card,
-  CardActions,
   CardContent,
   Button,
   Typography,
@@ -81,7 +78,9 @@ const Index = ({ newUsers }) => {
                   )}
                   <Box m={2} />
                   <Box display="flex" justifyContent="center">
-                    <Button variant="outlined">本棚を見る</Button>
+                    <Link href={`/${newUser.username}/books`}>
+                      <Button variant="outlined">本棚を見る</Button>
+                    </Link>
                   </Box>
                 </CardContent>
               </Card>

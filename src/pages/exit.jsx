@@ -87,7 +87,7 @@ const Exit = () => {
 
   return (
     <>
-      <p>アプリに保存されている一切のデータが削除され、復元することはできません</p>
+      <p>ユーザーに関連する一切のデータが消去されます</p>
       {loginUser && (
         <Button variant="outlined" color="secondary" onClick={handleModalOpen}>
           退会する

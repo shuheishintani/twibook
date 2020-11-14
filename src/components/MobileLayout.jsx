@@ -21,7 +21,8 @@ import Avatar from '@material-ui/core/Avatar';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import PersonIcon from '@material-ui/icons/Person';
 import PeopleIcon from '@material-ui/icons/People';
-import QueueMusicIcon from '@material-ui/icons/QueueMusic';
+import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
+import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import Link from 'next/link';
 import SearchIcon from '@material-ui/icons/Search';
@@ -53,8 +54,6 @@ const useStyles = makeStyles(theme => ({
 export default function MobileLayout({ children }) {
   const classes = useStyles();
   const [state, setState] = useState(false);
-  const [notifications, setNotifications] = useState([])
-  const theme = useTheme();
   const [loginUser] = useAuthObserver();
   const [login, logout] = useAuthMethods();
   const [open, setOpen] = useState(true);
@@ -177,19 +176,48 @@ export default function MobileLayout({ children }) {
       <Divider />
       <List>
         {loginUser ? (
-          <ListItem button onClick={logout} >
-            <ListItemIcon>
-              <ExitToAppIcon />
-            </ListItemIcon>
-            <ListItemText primary='ログアウト' />
-          </ListItem>
-        ) : (
-            <ListItem button onClick={login} >
+          <>
+            <ListItem button onClick={logout} >
               <ListItemIcon>
-                <TwitterIcon />
+                <ExitToAppIcon />
               </ListItemIcon>
-              <ListItemText primary='ログイン' />
+              <ListItemText primary='ログアウト' />
             </ListItem>
+            <Link href='/contact'>
+              <ListItem button >
+                <ListItemIcon>
+                  <MailOutlineOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="お問い合わせ" />
+              </ListItem>
+            </Link>
+            <Link href="/exit">
+              <ListItem button >
+                <ListItemIcon>
+                  <CancelOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="退会" />
+              </ListItem>
+            </Link>
+          </>
+
+        ) : (
+            <>
+              <ListItem button onClick={login} >
+                <ListItemIcon>
+                  <TwitterIcon />
+                </ListItemIcon>
+                <ListItemText primary='ログイン' />
+              </ListItem>
+              <Link href='/contact'>
+                <ListItem button >
+                  <ListItemIcon>
+                    <MailOutlineOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="お問い合わせ" />
+                </ListItem>
+              </Link>
+            </>
           )}
       </List>
     </div>
@@ -215,9 +243,11 @@ export default function MobileLayout({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            TwiBook
+          <Link href='/' >
+            <Typography variant="h6" noWrap className={classes.logo}>
+              TwiBook
           </Typography>
+          </Link>
         </Toolbar>
         <Divider />
       </AppBar>

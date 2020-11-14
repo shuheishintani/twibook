@@ -18,7 +18,7 @@ const Profile = () => {
   return (
     <>
       <Box flexGrow={1}>
-        <Box display="flex" alignItems="flex-end">
+        {/* <Box display="flex" alignItems="flex-end">
           <Avatar alt="profile-img" src={loginUser.profileImageUrl} />
           <Box m={1} />
           <Typography variant="subtitle1">
@@ -26,8 +26,8 @@ const Profile = () => {
           </Typography>
           <Box m={1} />
         </Box>
-        <Box m={3} />
-        <Typography variant="subtitle2">実装中</Typography>
+        <Box m={3} /> */}
+        <Typography variant="subtitle2">実装中です</Typography>
       </Box>
       <Box m={3} />
       <Box m={3} />

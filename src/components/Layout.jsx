@@ -100,6 +100,11 @@ const useStyles = makeStyles(theme => ({
   dividerColor: {
     backgroundColor: '#2196f3',
   },
+  logo: {
+    '&:hover': {
+      cursor: 'pointer',
+    },
+  },
 }));
 
 export default function Layout({ children }) {
@@ -164,9 +169,12 @@ export default function Layout({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" noWrap>
-            TwiBook
+          <Link href='/' >
+            <Typography variant="h6" noWrap className={classes.logo}>
+              TwiBook
           </Typography>
+          </Link>
+
         </Toolbar>
         <Divider />
       </AppBar>
@@ -253,12 +261,14 @@ export default function Layout({ children }) {
                 </ListItemIcon>
                 <ListItemText primary="ログアウト" />
               </ListItem>
-              <ListItem button >
-                <ListItemIcon>
-                  <MailOutlineOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary="お問い合わせ" />
-              </ListItem>
+              <Link href='/contact'>
+                <ListItem button >
+                  <ListItemIcon>
+                    <MailOutlineOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="お問い合わせ" />
+                </ListItem>
+              </Link>
               <Link href="/exit">
                 <ListItem button >
                   <ListItemIcon>
@@ -277,16 +287,17 @@ export default function Layout({ children }) {
                   </ListItemIcon>
                   <ListItemText primary="ログイン" />
                 </ListItem>
-                <ListItem button >
-                  <ListItemIcon>
-                    <MailOutlineOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="お問い合わせ" />
-                </ListItem>
+                <Link href='/contact'>
+                  <ListItem button >
+                    <ListItemIcon>
+                      <MailOutlineOutlinedIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="お問い合わせ" />
+                  </ListItem>
+                </Link>
+
               </>
-
             )}
-
         </List>
       </Drawer>
       <main
