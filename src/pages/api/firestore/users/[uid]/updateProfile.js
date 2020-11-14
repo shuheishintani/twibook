@@ -67,7 +67,7 @@ export default async (req, res) => {
         message: `${loginUser.displayName}さんが参加しました`,
         unread: true,
         createdBy: loginUser,
-        createdAt: firebaseAdmin.firestore.FieldValue.serverTimestamp(),
+        createdAt: Date.now(),
       });
     }
   });

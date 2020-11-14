@@ -55,8 +55,6 @@ const Notification = () => {
 
   console.log(loginUserNotifications)
 
-  console.log(notifications)
-
   if (notifications.length === 0) {
     return <Typography variant="subtitle1">新着通知はありません</Typography>
   }
