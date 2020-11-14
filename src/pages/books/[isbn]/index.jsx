@@ -98,7 +98,7 @@ const BookDetail = ({ readers }) => {
               </Typography>
               <Box m={2} />
               <Typography variant="subtitle2"></Typography>
-              <Typography variant="body2">¥{book.price}</Typography>
+              <Typography variant="body2">¥ {book.price}</Typography>
               <Box m={1} />
               <Typography variant="body2">
                 {book.salesDate.replace('頃', '')}発売
@@ -129,6 +129,28 @@ const BookDetail = ({ readers }) => {
 
           <Divider />
           <Box m={3} />
+
+          {!loginUser && readers.length !== 0 && (
+            <>
+              <Typography variant="subtitle2">
+                この本を読んだユーザー
+              </Typography>
+              <Box m={1} />
+              <AvatarGroup max={30}>
+                {readers.map(reader => (
+                  <motion.div
+                    key={reader.uid}
+                    whileHover={{ scale: 1.1 }}
+                    className={classes.root}
+                  >
+                    <Link href={`/${reader.username}/books`}>
+                      <Avatar alt="profile-img" src={reader.profileImageUrl} />
+                    </Link>
+                  </motion.div>
+                ))}
+              </AvatarGroup>
+            </>
+          )}
 
           {friendReaders.length !== 0 && (
             <>

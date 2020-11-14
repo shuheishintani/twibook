@@ -84,6 +84,7 @@ const FriendListItem = ({ friendId }) => {
                   <Typography variant="body2">
                     {friend.displayName}
                   </Typography>
+                  <Box m={0.5} />
                   <Typography variant="body2" color="textSecondary">
                     @{friend.username}
                   </Typography>

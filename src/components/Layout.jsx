@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
 import { useRecoilState } from 'recoil';
-import { loginUserNotificationsState, snackbarOpenState } from '@/recoil/atoms';
+import { loginUserNotificationsState } from '@/recoil/atoms';
 import useAuthObserver from '@/hooks/useAuthObserver';
 import useAuthMethods from '@/hooks/useAuthMethods';
 import Link from 'next/link';
@@ -22,7 +22,6 @@ import {
   ListItemIcon,
   ListItemText,
   Badge,
-  Snackbar,
 } from '@material-ui/core';
 
 import {
@@ -35,6 +34,8 @@ import {
   Search as SearchIcon,
   ImportContacts as ImportContactsIcon,
   Notifications as NotificationsIcon,
+  CancelOutlined as CancelOutlinedIcon,
+  MailOutlineOutlined as MailOutlineOutlinedIcon
 } from '@material-ui/icons';
 
 import MuiAlert from '@material-ui/lab/Alert';
@@ -110,7 +111,6 @@ export default function Layout({ children }) {
   const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(
     loginUserNotificationsState
   );
-  const [snackbarOpen, setSnackbarOpen] = useRecoilState(snackbarOpenState)
 
   useEffect(() => {
     if (loginUser) {
@@ -246,20 +246,47 @@ export default function Layout({ children }) {
         <Divider />
         <List>
           {loginUser ? (
-            <ListItem button onClick={logout}>
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="ログアウト" />
-            </ListItem>
-          ) : (
-              <ListItem button onClick={login}>
+            <>
+              <ListItem button onClick={logout}>
                 <ListItemIcon>
-                  <TwitterIcon />
+                  <ExitToAppIcon />
                 </ListItemIcon>
-                <ListItemText primary="ログイン" />
+                <ListItemText primary="ログアウト" />
               </ListItem>
+              <ListItem button >
+                <ListItemIcon>
+                  <MailOutlineOutlinedIcon />
+                </ListItemIcon>
+                <ListItemText primary="お問い合わせ" />
+              </ListItem>
+              <Link href="/exit">
+                <ListItem button >
+                  <ListItemIcon>
+                    <CancelOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="退会" />
+                </ListItem>
+              </Link>
+
+            </>
+          ) : (
+              <>
+                <ListItem button onClick={login}>
+                  <ListItemIcon>
+                    <TwitterIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="ログイン" />
+                </ListItem>
+                <ListItem button >
+                  <ListItemIcon>
+                    <MailOutlineOutlinedIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="お問い合わせ" />
+                </ListItem>
+              </>
+
             )}
+
         </List>
       </Drawer>
       <main
@@ -270,13 +297,6 @@ export default function Layout({ children }) {
         <div className={classes.drawerHeader} />
         {children}
       </main>
-      <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={2000}
-        onClose={() => setSnackbarOpen(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'left' }}
-        message='アカウントを削除しました'
-      />
     </div>
   );
 }

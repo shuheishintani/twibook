@@ -215,7 +215,7 @@ const Books = ({ bookListOwner }) => {
           >
             <TwitterIcon fontSize="small" style={{ color: '#1DA1F2' }} />
             <Box m={1} />
-            Twitterで本棚を公開する
+            本棚を公開する
           </Button>
           <Box m={3} />
           <FormControlLabel

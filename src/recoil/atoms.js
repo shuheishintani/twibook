@@ -39,8 +39,3 @@ export const authorKeywordState = atom({
   key: 'authorKeyword',
   default: '',
 });
-
-export const snackbarOpenState = atom({
-  key: 'snackbarOpen',
-  defualt: false,
-});
