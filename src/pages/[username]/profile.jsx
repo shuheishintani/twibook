@@ -35,15 +35,15 @@ const Profile = () => {
         </Box>
         <Box m={3} />
         <Typography variant="subtitle2">
-          追加した本の数: {loginUserBooks.length}
+          追加した本の数: {loginUserBooks.length}冊
         </Typography>
         <Box m={2} />
         <Typography variant="subtitle2">
-          フレンド: {loginUserFriends.length}
+          フレンド: {loginUserFriends.length}人
         </Typography>
         <Box m={2} />
         <Typography variant="subtitle2">
-          購読中のユーザー: {loginUserSubscribe.length}
+          購読中のユーザー: {loginUserSubscribe.length}人
         </Typography>
         <Box m={2} />
         <Typography variant="subtitle2">

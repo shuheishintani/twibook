@@ -57,7 +57,7 @@ const Index = ({ newUsers }) => {
                       </Typography>
                     </Box>
                     {new Date(newUser.createdAt) > Date.now() - 86400000 && (
-                      <Typography variant="subtitle" color="secondary">
+                      <Typography variant="subtitle2" color="secondary">
                         new!
                       </Typography>
                     )}

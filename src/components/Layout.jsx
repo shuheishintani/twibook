@@ -22,6 +22,7 @@ import {
   ListItemIcon,
   ListItemText,
   Badge,
+  Box
 } from '@material-ui/core';
 
 import {
@@ -37,8 +38,6 @@ import {
   CancelOutlined as CancelOutlinedIcon,
   MailOutlineOutlined as MailOutlineOutlinedIcon
 } from '@material-ui/icons';
-
-import MuiAlert from '@material-ui/lab/Alert';
 
 const drawerWidth = 240;
 
@@ -89,6 +88,7 @@ const useStyles = makeStyles(theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginLeft: -drawerWidth,
+    // minHeight: '100%'
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -105,6 +105,12 @@ const useStyles = makeStyles(theme => ({
       cursor: 'pointer',
     },
   },
+  footer: {
+    width: '100%',
+    height: '50px',
+    'text-align': 'center',
+    'bottom': 0,
+  }
 }));
 
 export default function Layout({ children }) {
@@ -306,8 +312,16 @@ export default function Layout({ children }) {
         })}
       >
         <div className={classes.drawerHeader} />
-        {children}
+        <Box style={{ minHeight: '90vh' }}>
+          {children}
+        </Box>
+        <Box m={10} />
+        <footer className={classes.footer}>
+          <hr />
+          <p>&copy; 2020 Twibook</p>
+        </footer>
       </main>
+
     </div>
   );
 }
