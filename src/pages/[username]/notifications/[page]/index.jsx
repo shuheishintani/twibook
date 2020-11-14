@@ -43,6 +43,9 @@ const Notification = () => {
 
   useEffect(() => {
     if (loginUser) {
+      if (notifications.every(notification => !notification.unread)) {
+        return
+      }
       fetch(`/api/firestore/users/${loginUser.uid}/readNotification`, {
         method: 'PATCH',
         headers: {
@@ -50,7 +53,7 @@ const Notification = () => {
         },
       });
     }
-  }, [loginUser]);
+  }, [loginUser, notifications]);
 
   const handlePagination = (e, page) => {
     router.push(`/${loginUser.username}/notifications/${page}`).then(() => {

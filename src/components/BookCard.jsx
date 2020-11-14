@@ -82,6 +82,7 @@ const BookCard = ({ book }) => {
         .set({
           id: loginUserBooksRef.id,
           ownerId: loginUser.uid,
+          createdAt: Date.now(),
           ...book,
         })
         .then(() => resolve())

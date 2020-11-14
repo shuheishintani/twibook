@@ -42,6 +42,7 @@ const fetchBooksByUid = async uid => {
     .collection('users')
     .doc(uid)
     .collection('books')
+    .orderBy('isbn', 'desc')
     .get();
 
   return new Promise((resolve, reject) => {

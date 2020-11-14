@@ -11,6 +11,10 @@ export default async (req, res) => {
       .where('unread', '==', true)
       .get();
 
+    if (unreadNotificationsSnapshot.docs.length === 0) {
+      res.end();
+    }
+
     const unreadNotificationIds = unreadNotificationsSnapshot.docs.map(
       doc => doc.data().id
     );
