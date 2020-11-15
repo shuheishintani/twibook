@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
 import { dbAdmin } from '@/firebase/admin';
-import useSWR from 'swr';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 import FriendList from '@/components/FriendList';
 import { Box, Avatar, Typography, CircularProgress } from '@material-ui/core';
 

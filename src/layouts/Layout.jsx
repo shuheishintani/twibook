@@ -36,7 +36,8 @@ import {
   ImportContacts as ImportContactsIcon,
   Notifications as NotificationsIcon,
   CancelOutlined as CancelOutlinedIcon,
-  MailOutlineOutlined as MailOutlineOutlinedIcon
+  MailOutlineOutlined as MailOutlineOutlinedIcon,
+  FiberNew as FiberNewIcon
 } from '@material-ui/icons';
 
 const drawerWidth = 240;
@@ -184,7 +185,6 @@ export default function Layout({ children }) {
         </Toolbar>
         <Divider />
       </AppBar>
-
       <Drawer
         className={classes.drawer}
         variant="persistent"
@@ -204,77 +204,104 @@ export default function Layout({ children }) {
           </IconButton>
         </div>
         <Divider />
-        <List>
-          <Link href={`/${loginUser?.username}/profile`}>
-            <ListItem button disabled={!loginUser}>
+        {!loginUser && (
+          <List>
+            <Link href='/'>
+              <ListItem button>
+                <ListItemIcon>
+                  <FiberNewIcon />
+                </ListItemIcon>
+                <ListItemText primary='新着ユーザー' />
+              </ListItem>
+            </Link>
+            <Link href="/search">
+              <ListItem button>
+                <ListItemIcon>
+                  <SearchIcon />
+                </ListItemIcon>
+                <ListItemText primary="本を探す" />
+              </ListItem>
+            </Link>
+            <ListItem button onClick={login}>
               <ListItemIcon>
-                <PersonIcon />
+                <TwitterIcon />
               </ListItemIcon>
-              <ListItemText primary="プロフィール" />
+              <ListItemText primary="ログイン" />
             </ListItem>
-          </Link>
+          </List>
+        )}
 
-          <Link href={`/${loginUser?.username}/friends`}>
-            <ListItem button disabled={!loginUser}>
-              <ListItemIcon>
-                <PeopleIcon />
-              </ListItemIcon>
-              <ListItemText primary="友達" />
-            </ListItem>
-          </Link>
+        {loginUser && (
+          <>
+            <List>
+              <Link href='/'>
+                <ListItem button>
+                  <ListItemIcon>
+                    <FiberNewIcon />
+                  </ListItemIcon>
+                  <ListItemText primary='新着ユーザー' />
+                </ListItem>
+              </Link>
+              <Link href={`/${loginUser?.username}/profile`}>
+                <ListItem button disabled={!loginUser}>
+                  <ListItemIcon>
+                    <PersonIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="プロフィール" />
+                </ListItem>
+              </Link>
 
-          <Link href={`/${loginUser?.username}/books`}>
-            <ListItem button disabled={!loginUser}>
-              <ListItemIcon>
-                <ImportContactsIcon />
-              </ListItemIcon>
-              <ListItemText primary="My本棚" />
-            </ListItem>
-          </Link>
+              <Link href={`/${loginUser?.username}/friends`}>
+                <ListItem button disabled={!loginUser}>
+                  <ListItemIcon>
+                    <PeopleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="友達" />
+                </ListItem>
+              </Link>
 
-          <Link href={`/${loginUser?.username}/notifications/1`}>
-            <ListItem button disabled={!loginUser}>
-              <ListItemIcon>
-                <Badge
-                  badgeContent={
-                    unreadNotifications && unreadNotifications.length
-                  }
-                  color="primary"
-                >
-                  <NotificationsIcon />
-                </Badge>
-              </ListItemIcon>
-              <ListItemText primary="通知" />
-            </ListItem>
-          </Link>
+              <Link href={`/${loginUser?.username}/books`}>
+                <ListItem button disabled={!loginUser}>
+                  <ListItemIcon>
+                    <ImportContactsIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="My本棚" />
+                </ListItem>
+              </Link>
 
-          <Link href="/search">
-            <ListItem button>
-              <ListItemIcon>
-                <SearchIcon />
-              </ListItemIcon>
-              <ListItemText primary="検索" />
-            </ListItem>
-          </Link>
-        </List>
-        <Divider />
-        <List>
-          {loginUser ? (
-            <>
+              <Link href={`/${loginUser?.username}/notifications/1`}>
+                <ListItem button disabled={!loginUser}>
+                  <ListItemIcon>
+                    <Badge
+                      badgeContent={
+                        unreadNotifications && unreadNotifications.length
+                      }
+                      color="primary"
+                    >
+                      <NotificationsIcon />
+                    </Badge>
+                  </ListItemIcon>
+                  <ListItemText primary="通知" />
+                </ListItem>
+              </Link>
+
+              <Link href="/search">
+                <ListItem button>
+                  <ListItemIcon>
+                    <SearchIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="本を探す" />
+                </ListItem>
+              </Link>
+            </List>
+            <Divider />
+            <List>
               <ListItem button onClick={logout}>
                 <ListItemIcon>
                   <ExitToAppIcon />
                 </ListItemIcon>
                 <ListItemText primary="ログアウト" />
               </ListItem>
-              {/* <Link href='/contact'>
-                <ListItem button >
-                  <ListItemIcon>
-                    <MailOutlineOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="お問い合わせ" />
-                </ListItem>
-              </Link> */}
               <Link href="/exit">
                 <ListItem button >
                   <ListItemIcon>
@@ -283,28 +310,9 @@ export default function Layout({ children }) {
                   <ListItemText primary="退会" />
                 </ListItem>
               </Link>
-
-            </>
-          ) : (
-              <>
-                <ListItem button onClick={login}>
-                  <ListItemIcon>
-                    <TwitterIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="ログイン" />
-                </ListItem>
-                {/* <Link href='/contact'>
-                  <ListItem button >
-                    <ListItemIcon>
-                      <MailOutlineOutlinedIcon />
-                    </ListItemIcon>
-                    <ListItemText primary="お問い合わせ" />
-                  </ListItem>
-                </Link> */}
-
-              </>
-            )}
-        </List>
+            </List>
+          </>
+        )}
       </Drawer>
       <main
         className={clsx(classes.content, {
@@ -312,16 +320,16 @@ export default function Layout({ children }) {
         })}
       >
         <div className={classes.drawerHeader} />
-        <Box style={{ minHeight: '90vh' }}>
+        <Box style={{ minHeight: '100vh' }}>
           {children}
         </Box>
         <Box m={10} />
         <footer className={classes.footer}>
-          <hr />
+          <Divider />
           <p>&copy; 2020 Twibook</p>
         </footer>
       </main>
 
-    </div>
+    </div >
   );
 }

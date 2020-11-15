@@ -29,14 +29,10 @@ const useStyles = makeStyles(theme => ({
 
 const Exit = () => {
   const [loginUser, setLoginUser] = useRecoilState(loginUserState);
-  const [loginUserBooks, setLoginUserBooks] = useRecoilState(
-    loginUserBooksState
-  );
+  const setLoginUserBooks = useSetRecoilState(loginUserBooksState);
   const setLoginUserFriends = useSetRecoilState(loginUserFriendsState);
   const setLoginUserSubscribe = useSetRecoilState(loginUserSubscribeState);
-  const setLoginUserNotifications = useSetRecoilState(
-    loginUserNotificationsState
-  );
+  const setLoginUserNotifications = useSetRecoilState(loginUserNotificationsState);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -53,7 +49,9 @@ const Exit = () => {
   const deleteUser = async () => {
     if (loginUser && loginUser.uid === loginUser.uid) {
       setLoading(true);
-      await fetch(`/api/firestore/users/${loginUser.uid}/deleteUser`);
+      await fetch(`/api/firestore/users/${loginUser.uid}`, {
+        method: 'DELETE'
+      });
       setLoginUser(null);
       setLoginUserBooks([]);
       setLoginUserFriends([]);
@@ -87,7 +85,7 @@ const Exit = () => {
 
   return (
     <>
-      <p>ユーザーに関連する一切のデータが消去されます</p>
+      <p>アカウントに関連する一切のデータが削除されます</p>
       {loginUser && (
         <Button variant="outlined" color="secondary" onClick={handleModalOpen}>
           退会する

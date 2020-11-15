@@ -15,7 +15,6 @@ import {
 } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -90,7 +89,7 @@ const BookCard = ({ book }) => {
     });
 
     const promise2 = new Promise((resolve, reject) => {
-      fetch(`/api/firestore/users/${loginUser.uid}/addBook`, {
+      fetch(`/api/firestore/users/${loginUser.uid}/notifications`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

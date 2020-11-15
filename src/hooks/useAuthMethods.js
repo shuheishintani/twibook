@@ -38,7 +38,7 @@ export default function useLoginMethod() {
         };
 
         const response = await fetch(
-          `/api/firestore/users/${loginUser.id_str}/updateProfile`,
+          `/api/firestore/users/${loginUser.id_str}`,
           {
             method: 'POST',
             headers: {

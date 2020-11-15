@@ -2,8 +2,8 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client'
 import clsx from 'clsx';
-import { loginUserState, loginUserNotificationsState } from '@/recoil/atoms'
-import { useRecoilValue, useRecoilState } from 'recoil';
+import { loginUserNotificationsState } from '@/recoil/atoms'
+import { useRecoilState } from 'recoil';
 import useAuthObserver from '@/hooks/useAuthObserver';
 import useAuthMethods from '@/hooks/useAuthMethods';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
@@ -24,6 +24,7 @@ import PeopleIcon from '@material-ui/icons/People';
 import MailOutlineOutlinedIcon from '@material-ui/icons/MailOutlineOutlined';
 import CancelOutlinedIcon from '@material-ui/icons/CancelOutlined';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import FiberNewIcon from '@material-ui/icons/FiberNew';
 import Link from 'next/link';
 import SearchIcon from '@material-ui/icons/Search';
 import Box from '@material-ui/core/Box';
@@ -49,6 +50,12 @@ const useStyles = makeStyles(theme => ({
   dividerColor: {
     backgroundColor: '#2196f3',
   },
+  footer: {
+    width: '100%',
+    height: '50px',
+    'text-align': 'center',
+    'bottom': 0,
+  }
 }));
 
 export default function MobileLayout({ children }) {
@@ -56,7 +63,6 @@ export default function MobileLayout({ children }) {
   const [state, setState] = useState(false);
   const [loginUser] = useAuthObserver();
   const [login, logout] = useAuthMethods();
-  const [open, setOpen] = useState(true);
   const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(loginUserNotificationsState)
 
   useEffect(() => {
@@ -111,86 +117,110 @@ export default function MobileLayout({ children }) {
     >
 
       <div>
-        {loginUser && (
+        {loginUser ? (
           <IconButton edge="end" color="inherit">
             <Avatar alt="profile-img" src={loginUser.profileImageUrl} />
           </IconButton>
-        )}
+        ) : (
+            <IconButton edge="end" color="inherit">
+              <Avatar alt="profile-img" />
+            </IconButton>
+          )}
       </div>
       <Divider />
-      <List>
-        <Link href={`/${loginUser?.username}/profile`}>
-          <ListItem button disabled={!loginUser}>
+      {!loginUser && (
+        <>
+          <Link href='/'>
+            <ListItem button>
+              <ListItemIcon>
+                <FiberNewIcon />
+              </ListItemIcon>
+              <ListItemText primary='新着ユーザー' />
+            </ListItem>
+          </Link>
+          <Link href='/search'>
+            <ListItem button>
+              <ListItemIcon>
+                <SearchIcon />
+              </ListItemIcon>
+              <ListItemText primary='本を探す' />
+            </ListItem>
+          </Link>
+          <ListItem button onClick={login} >
             <ListItemIcon>
-              <PersonIcon />
+              <TwitterIcon />
             </ListItemIcon>
-            <ListItemText primary='プロフィール' />
+            <ListItemText primary='ログイン' />
           </ListItem>
-        </Link>
+        </>
+      )}
+      {loginUser && (
+        <>
+          <List>
+            <Link href='/'>
+              <ListItem button>
+                <ListItemIcon>
+                  <FiberNewIcon />
+                </ListItemIcon>
+                <ListItemText primary='新着ユーザー' />
+              </ListItem>
+            </Link>
+            <Link href={`/${loginUser?.username}/profile`}>
+              <ListItem button disabled={!loginUser}>
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText primary='プロフィール' />
+              </ListItem>
+            </Link>
+            <Link href={`/${loginUser?.username}/friends`}>
+              <ListItem button disabled={!loginUser}>
+                <ListItemIcon>
 
+                  <Badge badgeContent={newEntryNotifications && newEntryNotifications.length} color="primary">
+                    <PeopleIcon />
 
-        <Link href={`/${loginUser?.username}/friends`}>
-          <ListItem button disabled={!loginUser}>
-            <ListItemIcon>
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary='友達' />
+              </ListItem>
+            </Link>
+            <Link href={`/${loginUser?.username}/books`}>
+              <ListItem button disabled={!loginUser}>
+                <ListItemIcon>
+                  <ImportContactsIcon />
+                </ListItemIcon>
+                <ListItemText primary='My本棚' />
+              </ListItem>
+            </Link>
+            <Link href={`/${loginUser?.username}/notifications/1`}>
+              <ListItem button disabled={!loginUser}>
+                <ListItemIcon>
+                  <Badge badgeContent={addBookNotifications && addBookNotifications.length} color="primary">
+                    <NotificationsIcon />
+                  </Badge>
+                </ListItemIcon>
+                <ListItemText primary='通知' />
+              </ListItem>
+            </Link>
+            <Link href='/search'>
+              <ListItem button>
+                <ListItemIcon>
+                  <SearchIcon />
+                </ListItemIcon>
+                <ListItemText primary='本を探す' />
+              </ListItem>
+            </Link>
 
-              <Badge badgeContent={newEntryNotifications && newEntryNotifications.length} color="primary">
-                <PeopleIcon />
-
-              </Badge>
-            </ListItemIcon>
-            <ListItemText primary='友達' />
-          </ListItem>
-        </Link>
-
-
-        <Link href={`/${loginUser?.username}/books`}>
-          <ListItem button disabled={!loginUser}>
-            <ListItemIcon>
-              <ImportContactsIcon />
-            </ListItemIcon>
-            <ListItemText primary='My本棚' />
-          </ListItem>
-        </Link>
-
-        <Link href={`/${loginUser?.username}/notifications/1`}>
-          <ListItem button disabled={!loginUser}>
-            <ListItemIcon>
-              <Badge badgeContent={addBookNotifications && addBookNotifications.length} color="primary">
-                <NotificationsIcon />
-              </Badge>
-            </ListItemIcon>
-            <ListItemText primary='通知' />
-          </ListItem>
-        </Link>
-
-        <Link href='/search'>
-          <ListItem button>
-            <ListItemIcon>
-              <SearchIcon />
-            </ListItemIcon>
-            <ListItemText primary='検索' />
-          </ListItem>
-        </Link>
-
-      </List>
-      <Divider />
-      <List>
-        {loginUser ? (
-          <>
+          </List>
+          <Divider />
+          <List>
             <ListItem button onClick={logout} >
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
               <ListItemText primary='ログアウト' />
             </ListItem>
-            {/* <Link href='/contact'>
-              <ListItem button >
-                <ListItemIcon>
-                  <MailOutlineOutlinedIcon />
-                </ListItemIcon>
-                <ListItemText primary="お問い合わせ" />
-              </ListItem>
-            </Link> */}
             <Link href="/exit">
               <ListItem button >
                 <ListItemIcon>
@@ -199,27 +229,15 @@ export default function MobileLayout({ children }) {
                 <ListItemText primary="退会" />
               </ListItem>
             </Link>
-          </>
+          </List>
 
-        ) : (
-            <>
-              <ListItem button onClick={login} >
-                <ListItemIcon>
-                  <TwitterIcon />
-                </ListItemIcon>
-                <ListItemText primary='ログイン' />
-              </ListItem>
-              {/* <Link href='/contact'>
-                <ListItem button >
-                  <ListItemIcon>
-                    <MailOutlineOutlinedIcon />
-                  </ListItemIcon>
-                  <ListItemText primary="お問い合わせ" />
-                </ListItem>
-              </Link> */}
-            </>
-          )}
-      </List>
+        </>
+      )}
+
+
+
+
+
     </div>
   );
 
@@ -260,7 +278,17 @@ export default function MobileLayout({ children }) {
         {list('left')}
       </SwipeableDrawer>
       <Box m={10} />
-      <Box m={3}>{children}</Box>
+      <Box m={3} >
+        <Box style={{ minHeight: '100vh' }}>
+          {children}
+        </Box>
+        <Box m={5} />
+        <footer className={classes.footer}>
+          <Divider />
+          <p>&copy; 2020 Twibook</p>
+        </footer>
+      </Box>
+
     </div>
   );
 }

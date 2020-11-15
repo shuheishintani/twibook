@@ -51,8 +51,8 @@ const BookListItem = ({
     <Grid item className={classes.root}>
       <motion.div className="img-wrap" layout whileHover={{ scale: 1.1 }} >
         <Box display="flex" alignItems="flex-start">
-          <Link href={`/books/${book.isbn}`}>
-            <Box boxShadow={7}>
+          <Link href={`/books/${isbn}`}>
+            <Box>
               <MediaQuery query="(max-width: 600px)">
                 <img src={coverImageUrl} alt="cover_img" width="70" height="98" />
               </MediaQuery>

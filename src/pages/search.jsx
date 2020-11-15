@@ -5,11 +5,11 @@ import {
   titleKeywordState,
   authorKeywordState,
 } from '@/recoil/atoms';
+import BookCard from '@/components/BookCard';
+import { fetchBooksByKeyword } from '@/lib/rakutenBookApi';
 import { TextField, Box, Button } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import { Grid, CircularProgress } from '@material-ui/core';
-import BookCard from '@/components/BookCard';
-import { fetchBooksByKeyword } from '@/lib/rakutenBookApi';
 import InfiniteScroll from 'react-infinite-scroller';
 
 const useStyles = makeStyles(() => ({
@@ -91,7 +91,7 @@ const Search = () => {
     setTitle('');
     setAuthor('');
     setPage(1);
-  }, []);
+  }, [setAuthor, setTitle]);
 
   return (
     <>
@@ -107,6 +107,7 @@ const Search = () => {
               onChange={handleTitleInput}
               className={classes.root}
               inputProps={{ style: { fontSize: 16 } }}
+              size="small"
             />
           </Box>
           <Box m={1}>
@@ -119,6 +120,7 @@ const Search = () => {
               onChange={handleAuthorInput}
               className={classes.root}
               inputProps={{ style: { fontSize: 16 } }}
+              size="small"
             />
           </Box>
           <Box m={1}>
