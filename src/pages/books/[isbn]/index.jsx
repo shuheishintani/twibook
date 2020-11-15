@@ -128,7 +128,7 @@ const BookDetail = ({ readers }) => {
             }}
             className={classes.amazonBtn}
           >
-            <img src="/amazon.png" alt="amazon_logo" width="20" height="20" />
+            <img src="/amazon.svg" alt="amazon_logo" width="20" height="20" />
             <Box m={1} />
             Amazonで購入する
           </Button>

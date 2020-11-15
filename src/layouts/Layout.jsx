@@ -37,7 +37,9 @@ import {
   Notifications as NotificationsIcon,
   CancelOutlined as CancelOutlinedIcon,
   MailOutlineOutlined as MailOutlineOutlinedIcon,
-  FiberNew as FiberNewIcon
+  FiberNew as FiberNewIcon,
+  BrightnessHigh as BrightnessHighIcon,
+  Brightness4 as Brightness4Icon
 } from '@material-ui/icons';
 
 const drawerWidth = 240;
@@ -114,15 +116,15 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function Layout({ children }) {
-  const classes = useStyles();
-  const theme = useTheme();
+export default function Layout({ children, darkMode, setDarkMode }) {
   const [loginUser] = useAuthObserver();
   const [login, logout] = useAuthMethods();
-  const [open, setOpen] = useState(true);
   const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(
     loginUserNotificationsState
   );
+  const [open, setOpen] = useState(true);
+  const classes = useStyles();
+  const theme = useTheme();
 
   useEffect(() => {
     if (loginUser) {
@@ -176,12 +178,24 @@ export default function Layout({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Link href='/' >
-            <Typography variant="h6" noWrap className={classes.logo}>
-              TwiBook
-          </Typography>
-          </Link>
-
+          <Box flexGrow={1}>
+            <Link href='/' >
+              <Typography variant="h6" noWrap className={classes.logo} >
+                TwiBook
+                 </Typography>
+            </Link>
+          </Box>
+          <Box>
+            {darkMode ? (
+              <IconButton onClick={() => setDarkMode(prev => !prev)}>
+                <Brightness4Icon />
+              </IconButton>
+            ) : (
+                <IconButton onClick={() => setDarkMode(prev => !prev)}>
+                  <BrightnessHighIcon />
+                </IconButton>
+              )}
+          </Box>
         </Toolbar>
         <Divider />
       </AppBar>

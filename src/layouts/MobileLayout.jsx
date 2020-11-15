@@ -32,6 +32,8 @@ import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import Badge from '@material-ui/core/Badge';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import BrightnessHighIcon from '@material-ui/icons/BrightnessHigh'
+import Brightness4Icon from '@material-ui/icons/Brightness4'
 
 
 const useStyles = makeStyles(theme => ({
@@ -58,7 +60,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function MobileLayout({ children }) {
+export default function MobileLayout({ children, darkMode, setDarkMode }) {
   const classes = useStyles();
   const [state, setState] = useState(false);
   const [loginUser] = useAuthObserver();
@@ -261,11 +263,24 @@ export default function MobileLayout({ children }) {
           >
             <MenuIcon />
           </IconButton>
-          <Link href='/' >
-            <Typography variant="h6" noWrap className={classes.logo}>
-              TwiBook
-          </Typography>
-          </Link>
+          <Box flexGrow={1}>
+            <Link href='/' >
+              <Typography variant="h6" noWrap className={classes.logo} >
+                TwiBook
+                 </Typography>
+            </Link>
+          </Box>
+          <Box>
+            {darkMode ? (
+              <IconButton onClick={() => setDarkMode(prev => !prev)}>
+                <Brightness4Icon />
+              </IconButton>
+            ) : (
+                <IconButton onClick={() => setDarkMode(prev => !prev)}>
+                  <BrightnessHighIcon />
+                </IconButton>
+              )}
+          </Box>
         </Toolbar>
         <Divider />
       </AppBar>
