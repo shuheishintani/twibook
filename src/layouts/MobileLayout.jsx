@@ -277,11 +277,11 @@ export default function MobileLayout({ children, darkMode, setDarkMode }) {
           </Box>
           <Box>
             {darkMode ? (
-              <IconButton onClick={() => setDarkMode(prev => !prev)}>
+              <IconButton onClick={toggleDrawer}>
                 <Brightness4Icon />
               </IconButton>
             ) : (
-                <IconButton onClick={() => setDarkMode(prev => !prev)}>
+                <IconButton onClick={toggleDrawer}>
                   <BrightnessHighIcon />
                 </IconButton>
               )}
