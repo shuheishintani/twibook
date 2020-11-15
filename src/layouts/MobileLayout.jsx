@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client'
 import clsx from 'clsx';
-import { loginUserNotificationsState } from '@/recoil/atoms'
+import { loginUserNotificationsState, darkModeState } from '@/recoil/atoms'
 import { useRecoilState } from 'recoil';
 import useAuthObserver from '@/hooks/useAuthObserver';
 import useAuthMethods from '@/hooks/useAuthMethods';
@@ -66,6 +66,7 @@ export default function MobileLayout({ children, darkMode, setDarkMode }) {
   const [loginUser] = useAuthObserver();
   const [login, logout] = useAuthMethods();
   const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(loginUserNotificationsState)
+  const [globalDarkMode, setGlobalDarkMode] = useRecoilState(darkModeState)
 
   useEffect(() => {
     if (loginUser) {
@@ -85,6 +86,10 @@ export default function MobileLayout({ children, darkMode, setDarkMode }) {
       setLoginUserNotifications([]);
     }
   }, [loginUser, setLoginUserNotifications]);
+
+  useEffect(() => {
+    setGlobalDarkMode(false)
+  }, [setGlobalDarkMode])
 
   const addBookNotifications =
     loginUserNotifications &&

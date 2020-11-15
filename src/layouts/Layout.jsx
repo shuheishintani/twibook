@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
-import { useRecoilState, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { loginUserNotificationsState, darkModeState } from '@/recoil/atoms';
 import useAuthObserver from '@/hooks/useAuthObserver';
 import useAuthMethods from '@/hooks/useAuthMethods';
