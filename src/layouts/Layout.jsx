@@ -1,8 +1,8 @@
 /* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { db } from '@/firebase/client';
-import { useRecoilState } from 'recoil';
-import { loginUserNotificationsState } from '@/recoil/atoms';
+import { useRecoilState, useSetRecoilState } from 'recoil';
+import { loginUserNotificationsState, darkModeState } from '@/recoil/atoms';
 import useAuthObserver from '@/hooks/useAuthObserver';
 import useAuthMethods from '@/hooks/useAuthMethods';
 import Link from 'next/link';
@@ -122,6 +122,7 @@ export default function Layout({ children, darkMode, setDarkMode }) {
   const [loginUserNotifications, setLoginUserNotifications] = useRecoilState(
     loginUserNotificationsState
   );
+  const [globalDarkMode, setGlobalDarkMode] = useRecoilState(darkModeState)
   const [open, setOpen] = useState(true);
   const classes = useStyles();
   const theme = useTheme();
@@ -145,6 +146,10 @@ export default function Layout({ children, darkMode, setDarkMode }) {
     }
   }, [loginUser, setLoginUserNotifications]);
 
+  useEffect(() => {
+    setGlobalDarkMode(false)
+  }, [setGlobalDarkMode])
+
   const unreadNotifications =
     loginUserNotifications &&
     loginUserNotifications.filter(notification => notification.unread === true);
@@ -156,6 +161,11 @@ export default function Layout({ children, darkMode, setDarkMode }) {
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  const toggleBrightness = () => {
+    setDarkMode(prev => !prev)
+    setGlobalDarkMode(prev => !prev)
+  }
 
   return (
     <div className={classes.root}>
@@ -187,11 +197,11 @@ export default function Layout({ children, darkMode, setDarkMode }) {
           </Box>
           <Box>
             {darkMode ? (
-              <IconButton onClick={() => setDarkMode(prev => !prev)}>
+              <IconButton onClick={toggleBrightness}>
                 <Brightness4Icon />
               </IconButton>
             ) : (
-                <IconButton onClick={() => setDarkMode(prev => !prev)}>
+                <IconButton onClick={toggleBrightness}>
                   <BrightnessHighIcon />
                 </IconButton>
               )}

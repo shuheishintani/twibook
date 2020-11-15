@@ -6,13 +6,7 @@ import { loginUserState, loginUserBooksState } from '@/recoil/atoms';
 import Link from 'next/link';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import {
-  Card,
-  CardContent,
-  Typography,
-  IconButton,
-  Box,
-} from '@material-ui/core';
+import { Card, CardContent, Typography, IconButton } from '@material-ui/core';
 import { Add } from '@material-ui/icons';
 import Snackbar from '@material-ui/core/Snackbar';
 
@@ -21,6 +15,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     alignItems: 'flex-start',
     height: '148px',
+    'box-shadow': '5px 5px 10px #999',
   },
   details: {
     display: 'flex',
@@ -116,34 +111,32 @@ const BookCard = ({ book }) => {
   return (
     <>
       <Grid item>
-        <Box boxShadow={7}>
-          <Card className={classes.root}>
-            <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
-            <div className={classes.details}>
-              <CardContent className={classes.content}>
-                <Link href={`/books/${book.isbn}`}>
-                  <div className={classes.hoverUnderline}>
-                    <Typography variant="subtitle1">{title}</Typography>
-                    <Typography variant="subtitle2" color="textSecondary">
-                      {author}（{publisherName}）
-                    </Typography>
-                  </div>
-                </Link>
-              </CardContent>
-            </div>
-            {loginUser && (
-              <IconButton
-                className={classes.addBtn}
-                variant="contained"
-                disabled={added}
-                onClick={addBook}
-                color="primary"
-              >
-                <Add />
-              </IconButton>
-            )}
-          </Card>
-        </Box>
+        <Card className={classes.root}>
+          <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
+          <div className={classes.details}>
+            <CardContent className={classes.content}>
+              <Link href={`/books/${book.isbn}`}>
+                <div className={classes.hoverUnderline}>
+                  <Typography variant="subtitle1">{title}</Typography>
+                  <Typography variant="subtitle2" color="textSecondary">
+                    {author}（{publisherName}）
+                  </Typography>
+                </div>
+              </Link>
+            </CardContent>
+          </div>
+          {loginUser && (
+            <IconButton
+              className={classes.addBtn}
+              variant="contained"
+              disabled={added}
+              onClick={addBook}
+              color="primary"
+            >
+              <Add />
+            </IconButton>
+          )}
+        </Card>
       </Grid>
       <Snackbar
         open={snackbarOpen}

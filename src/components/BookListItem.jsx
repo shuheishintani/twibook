@@ -14,6 +14,9 @@ const useStyles = makeStyles(() => ({
   root: {
     cursor: 'pointer',
   },
+  imgShadow: {
+    'box-shadow': '5px 5px 10px #999'
+  }
 }));
 
 const BookListItem = ({
@@ -54,10 +57,10 @@ const BookListItem = ({
           <Link href={`/books/${isbn}`}>
             <Box>
               <MediaQuery query="(max-width: 600px)">
-                <img src={coverImageUrl} alt="cover_img" width="70" height="98" />
+                <img src={coverImageUrl} alt="cover_img" width="70" height="98" className={classes.imgShadow} />
               </MediaQuery>
               <MediaQuery query="(min-width: 600px)">
-                <img src={coverImageUrl} alt="cover_img" width="105" height="148" />
+                <img src={coverImageUrl} alt="cover_img" width="105" height="148" className={classes.imgShadow} />
               </MediaQuery>
             </Box>
           </Link>

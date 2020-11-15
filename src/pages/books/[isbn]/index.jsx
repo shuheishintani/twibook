@@ -1,7 +1,12 @@
+/* eslint-disable prettier/prettier */
 import { useState, useEffect } from 'react';
 import { dbAdmin } from '@/firebase/admin';
 import { useRecoilValue } from 'recoil';
-import { loginUserState, loginUserFriendsState } from '@/recoil/atoms';
+import {
+  loginUserState,
+  loginUserFriendsState,
+  darkModeState,
+} from '@/recoil/atoms';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { fetchBookByIsbn } from '@/lib/rakutenBookApi';
@@ -50,6 +55,7 @@ const BookDetail = ({ readers }) => {
   const [unknownReaders, setUnknownReaders] = useState([]);
   const loginUserFriends = useRecoilValue(loginUserFriendsState);
   const loginUser = useRecoilValue(loginUserState);
+  const globalDarkMode = useRecoilValue(darkModeState);
   const { data, error } = useSWR(`/books/${isbn}`, () => fetchBookByIsbn(isbn));
 
   useEffect(() => {
@@ -128,12 +134,20 @@ const BookDetail = ({ readers }) => {
             }}
             className={classes.amazonBtn}
           >
-            <img src="/amazon.svg" alt="amazon_logo" width="20" height="20" />
+            {globalDarkMode ? (
+              <img
+                src="/invertedAmazon.svg"
+                alt="amazon_logo"
+                width="20"
+                height="20"
+              />
+            ) : (
+                <img src="/amazon.svg" alt="amazon_logo" width="20" height="20" />
+              )}
             <Box m={1} />
             Amazonで購入する
           </Button>
           <Box m={3} />
-
           <Divider />
           <Box m={3} />
 
