@@ -115,6 +115,11 @@ export default function MobileLayout({ children, darkMode, setDarkMode }) {
     setState(!state);
   };
 
+  const toggleBrightness = () => {
+    setDarkMode(prev => !prev)
+    setGlobalDarkMode(prev => !prev)
+  }
+
   const list = () => (
     <div
       className={clsx(classes.list)}
@@ -277,11 +282,11 @@ export default function MobileLayout({ children, darkMode, setDarkMode }) {
           </Box>
           <Box>
             {darkMode ? (
-              <IconButton onClick={toggleDrawer}>
+              <IconButton onClick={toggleBrightness}>
                 <Brightness4Icon />
               </IconButton>
             ) : (
-                <IconButton onClick={toggleDrawer}>
+                <IconButton onClick={toggleBrightness}>
                   <BrightnessHighIcon />
                 </IconButton>
               )}
