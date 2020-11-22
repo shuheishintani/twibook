@@ -31,10 +31,6 @@ const useStyles = makeStyles({
 const Index = ({ newUsers }) => {
   const classes = useStyles();
 
-  console.log('piyo');
-
-  console.log('hoge');
-
   return (
     <>
       <Typography variant="subtitle1">新着ユーザー</Typography>
