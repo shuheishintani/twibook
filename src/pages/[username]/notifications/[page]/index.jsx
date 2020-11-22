@@ -3,21 +3,10 @@ import { useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { loginUserNotificationsState, loginUserState } from '@/recoil/atoms';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import NotificationsList from '@/components/NotificationsList'
 import moment from 'moment-timezone';
-import { Divider, Typography, Box, Avatar } from '@material-ui/core';
+import {  Typography, Box } from '@material-ui/core';
 import { Pagination } from '@material-ui/lab';
-import { makeStyles } from '@material-ui/core/styles';
-
-const useStyles = makeStyles(theme => ({
-  hoverUnderline: {
-    '&:hover': {
-      textDecoration: 'underline',
-      cursor: 'pointer',
-    },
-  },
-}));
 
 const Notification = () => {
   const router = useRouter();
@@ -26,7 +15,6 @@ const Notification = () => {
   const loginUserNotifications = useRecoilValue(loginUserNotificationsState);
   const loginUser = useRecoilValue(loginUserState);
   const [notifications, setNotifications] = useState([]);
-  const classes = useStyles();
 
   useEffect(() => {
     if (loginUserNotifications) {
