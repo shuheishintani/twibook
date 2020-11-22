@@ -33,6 +33,8 @@ const Index = ({ newUsers }) => {
 
   console.log('piyo');
 
+  console.log('hoge');
+
   return (
     <>
       <Typography variant="subtitle1">新着ユーザー</Typography>
