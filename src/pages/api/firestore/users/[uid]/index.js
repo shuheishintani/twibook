@@ -11,31 +11,26 @@ export default async (req, res) => {
       access_token_secret: secret,
     });
 
-    const followersData = await client.get('/followers/list', {
+    const followers = await client.get('/followers/ids', {
       id: loginUser.uid,
+      stringify_ids: true,
     });
 
-    const followers = followersData.users.map(user => ({
-      uid: user.id_str,
-    }));
-
-    const followeesData = await client.get('/friends/list', {
+    const followees = await client.get('/friends/ids', {
       id: loginUser.uid,
+      stringify_ids: true,
     });
 
-    const followees = followeesData.users.map(user => ({
-      uid: user.id_str,
-    }));
-
-    const friendsOnTwitter = [...followers, ...followees];
+    const friendsOnTwitter = [...followers.ids, ...followees.ids];
+    const dedupedFriendsOnTwitter = [...new Set(friendsOnTwitter)];
 
     const allUserIds = await dbAdmin
       .collection('users')
       .get()
       .then(snapshot => snapshot.docs.map(doc => doc.data().uid));
 
-    const friends = friendsOnTwitter.filter(friendOnTwitter => {
-      return allUserIds.some(userId => userId === friendOnTwitter.uid);
+    const friendIds = dedupedFriendsOnTwitter.filter(friendOnTwitter => {
+      return allUserIds.some(userId => userId === friendOnTwitter);
     });
 
     const batch = dbAdmin.batch();
@@ -47,22 +42,27 @@ export default async (req, res) => {
     const newEntry = allUserIds.every(userId => userId !== loginUser.uid);
 
     if (newEntry) {
-      batch.set(loginUserRef, loginUser);
+      batch.set(loginUserRef, { ...loginUser, createdAt: Date.now() });
     } else {
       batch.set(loginUserRef, loginUser, { merge: true });
     }
 
-    friends.forEach(friend => {
-      const loginUserFriendRef = loginUserFriendsRef.doc(friend.uid);
+    friendIds.forEach(friendId => {
+      const loginUserFriendRef = loginUserFriendsRef.doc(friendId);
+
       const friendFriendsRef = usersRef
-        .doc(friend.uid)
+        .doc(friendId)
         .collection('friends')
         .doc(loginUser.uid);
 
-      batch.set(loginUserFriendRef, friend, { merge: true });
+      batch.set(friendFriendsRef, {
+        uid: loginUser.uid,
+      });
+
+      batch.set(loginUserFriendRef, { uid: friendId }, { merge: true });
 
       const friendNotificationRef = usersRef
-        .doc(friend.uid)
+        .doc(friendId)
         .collection('notifications')
         .doc();
 
@@ -74,9 +74,6 @@ export default async (req, res) => {
           unread: true,
           createdBy: loginUser,
           createdAt: Date.now(),
-        });
-        batch.set(friendFriendsRef, {
-          uid: loginUser.uid,
         });
       }
     });

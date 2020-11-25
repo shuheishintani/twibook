@@ -34,23 +34,19 @@ export default function useLoginMethod() {
           username: screen_name,
           displayName: name,
           profileImageUrl: profile_image_url,
-          createdAt: Date.now(),
         };
 
-        const response = await fetch(
-          `/api/firestore/users/${loginUser.id_str}`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              accessToken,
-              secret,
-              loginUser,
-            }),
-          }
-        );
+        const response = await fetch(`/api/firestore/users/${id_str}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            accessToken,
+            secret,
+            loginUser,
+          }),
+        });
 
         const { newEntry } = await response.json();
 
